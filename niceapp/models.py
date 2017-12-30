@@ -50,7 +50,7 @@ class Users(BaseModel):
     habit = models.IntegerField('习惯：0无，...', default=0)
     disgust = models.IntegerField('厌恶的事情：0无，1娘娘腔，2小气鬼，3脏话连篇，4不守信用，5...', default=0)
     wealth = models.IntegerField('财富：每月生活费多少元', default=0)
-    custom = models.CharField('自定义的描述或要求', max_length=255, default='')
+    custom = models.CharField('自定义的男生的描述人生理想啊啥的或女生自定义的一些要求', max_length=255, default='')
     threshold_fee = models.IntegerField('门槛费', default=10)
     # 实名制信息
     student_identity_card_qiniu_uri = models.CharField('学生证照片七牛云存储对应的uri', max_length=500, default='')
