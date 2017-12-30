@@ -2,5 +2,64 @@
 from __future__ import unicode_literals
 
 from django.db import models
-
+from wawo.settings import ONE_PAGE_LIMIT
 # Create your models here.
+
+
+class BaseModel(models.Model):
+    """基础扩展类"""
+    created_at = models.DateTimeField('创建记录时间', auto_now_add=True)
+    updated_at = models.DateTimeField('最后修改日期', auto_now=True)
+
+    @classmethod
+    def get_total(cls, father_id):
+        """
+        查询总数
+        :param father_id:
+        :return:
+        """
+        return cls.objects.filter(father_id=father_id).count()
+
+    @classmethod
+    def get_items(cls, page=0, limit=ONE_PAGE_LIMIT):
+        """
+        分页查询最多前 limit 条记录
+        :param page:
+        :param limit:
+        :return:
+        """
+        return cls.objects.all().order_by('serial_number')[page*limit: (page+1)*limit]
+
+
+class Users(BaseModel):
+    """用户信息表"""
+    # 个人必备信息
+    mobile = models.IntegerField('手机号', default=0)
+    sex = models.IntegerField('性别: 0女 1男', default=0)
+    status = models.IntegerField('状态: '
+                                 '0已注册，1已提交信息，2已接触，3已恋爱，4不合适，5已被投诉，6已投诉，'
+                                 '7已实名制，8实名制后已找到异性，9实名制后已恋爱，10实名制后已投诉，11实名制后已被投诉，'
+                                 '-1信息已过期（非恋爱状态同时一年内未登陆网站', default=0)
+    # 条件数据：女的就是期望男友条件数据，男的就是自身的条件数据
+    stature = models.IntegerField('身高(cm)', default=0)
+    weight = models.IntegerField('体重(kg)', default=0)
+    appearance = models.IntegerField('相貌: 0不要求，1干净整洁，2阳光自信，3英俊帅气，12，13，23为组合...', default=0)
+    character = models.IntegerField('性格：1暴躁，2温柔，3细心，4...', default=0)
+    hobby = models.IntegerField('兴趣：0无，1动漫，2足球，3乒乓球，4...', default=0)
+    speciality = models.CharField('特长：0无，1吉他，2诗词，3哲学，4画画，5...', max_length=100, default=0)
+    habit = models.IntegerField('习惯：0无，...', default=0)
+    disgust = models.IntegerField('厌恶的事情：0无，1娘娘腔，2小气鬼，3脏话连篇，4不守信用，5...', default=0)
+    wealth = models.IntegerField('财富：每月生活费多少元', default=0)
+    custom = models.CharField('自定义的描述或要求', max_length=255, default='')
+    threshold_fee = models.IntegerField('门槛费', default=10)
+    # 实名制信息
+    student_identity_card_qiniu_uri = models.CharField('学生证照片七牛云存储对应的uri', max_length=500, default='')
+    name = models.CharField('姓名', max_length=20, default='')
+    age = models.IntegerField('年龄', default=0)
+    school = models.CharField('学校名', max_length=100, default='')
+    college = models.CharField('院系名', max_length=100, default='')
+    profession = models.CharField('专业名', max_length=100, default='')
+    school_num = models.CharField('学号', max_length=100, default='')
+
+    class Meta:
+        db_table = 'users'
