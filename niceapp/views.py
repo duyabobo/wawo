@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.contrib.auth import login, logout
 from django.shortcuts import render, redirect
 
-from utils.auth import authenticate
+from utils.auth import authenticate, login, logout
 from form.login import UserForm
 from models import Users
 
