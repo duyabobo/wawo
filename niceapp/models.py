@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.contrib.auth.models import User
 from wawo.settings import ONE_PAGE_LIMIT
 # Create your models here.
 
@@ -12,13 +13,12 @@ class BaseModel(models.Model):
     updated_at = models.DateTimeField('最后修改日期', auto_now=True)
 
     @classmethod
-    def get_total(cls, father_id):
+    def get_total(cls):
         """
         查询总数
-        :param father_id:
         :return:
         """
-        return cls.objects.filter(father_id=father_id).count()
+        return cls.objects.all().count()
 
     @classmethod
     def get_items(cls, page=0, limit=ONE_PAGE_LIMIT):
@@ -33,12 +33,27 @@ class BaseModel(models.Model):
 
 class MessageCode(BaseModel):
     """用户短信码"""
+    user_id = models.IntegerField('uid', default=0)
     usage = models.IntegerField('用途：0登陆，1推荐通知，2...', default=0)
     mobile = models.IntegerField('手机号', default=0)
     code = models.IntegerField('四位短信码', default=0)
 
+    class Meta:
+        db_table = 'message_code'
 
-class Users(BaseModel):
+    @classmethod
+    def get_user_id(cls, mobile, code):
+        """
+        查询一个 user_id
+        :param mobile:
+        :param code:
+        :return:
+        """
+        message_code = cls.objects.values('user_id').filter(usage=0, mobile=mobile, code=code).first()
+        return message_code['user_id'] if message_code else None
+
+
+class Users(User):
     """用户信息表"""
     # 个人必备信息
     mobile = models.IntegerField('手机号', default=0)
@@ -71,9 +86,21 @@ class Users(BaseModel):
     class Meta:
         db_table = 'users'
 
+    @classmethod
+    def get_one(cls, user_id):
+        """
+        查询一个 user 记录
+        :param user_id:
+        :return:
+        """
+        return cls.objects.filter(id=user_id).first()
+
 
 class UserRelation(BaseModel):
     """用户关系表"""
     boy_id = models.IntegerField('男孩id', default=0)
     girl_id = models.IntegerField('女孩id', default=0)
     relation = models.IntegerField('0已通知/1已查阅/2已邀请/3已接触/4已恋爱/5已分手/6已投诉', default=0)
+
+    class Meta:
+        db_table = 'user_relation'
