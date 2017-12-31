@@ -63,3 +63,10 @@ class Users(BaseModel):
 
     class Meta:
         db_table = 'users'
+
+
+class UserRelation(BaseModel):
+    """用户关系表"""
+    boy_id = models.IntegerField('男孩id', default=0)
+    girl_id = models.IntegerField('女孩id', default=0)
+    relation = models.IntegerField('0已通知/1已查阅/2已邀请/3已接触/4已恋爱/5已分手/6已投诉', default=0)
