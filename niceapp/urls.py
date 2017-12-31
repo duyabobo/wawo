@@ -8,4 +8,5 @@ from views import *
 urlpatterns = [
     url(r'^login$', access_login, name='login'),
     url(r'^logout$', access_logout, name='logout'),
+    url(r'^index$', index, name='index'),
 ]

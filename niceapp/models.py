@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from wawo.settings import ONE_PAGE_LIMIT
 # Create your models here.
 
@@ -56,7 +56,7 @@ class MessageCode(BaseModel):
         return message_code['user_id'] if message_code else None
 
 
-class Users(BaseModel):
+class Users(AbstractUser):
     """用户信息表"""
     # 个人必备信息
     mobile = models.IntegerField('手机号', default=0)
@@ -86,8 +86,9 @@ class Users(BaseModel):
     profession = models.CharField('专业名', max_length=100, default='')
     school_num = models.CharField('学号', max_length=100, default='')
 
-    class Meta:
+    class Meta(AbstractUser.Meta):
         db_table = 'users'
+        swappable = 'AUTH_USER_MODEL'
 
     @classmethod
     def get_one(cls, user_id):

@@ -125,3 +125,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 ONE_PAGE_LIMIT = 24
+
+LOGIN_URL = '/login'
+
+AUTH_USER_MODEL = 'niceapp.Users'

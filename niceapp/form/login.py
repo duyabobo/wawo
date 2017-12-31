@@ -4,6 +4,7 @@
 from django import forms
 
 
-class UserForm(forms.Form):
+class AuthForm(forms.Form):
+    """登陆表单"""
     mobile = forms.CharField(label='手机号', max_length=100)
     code = forms.CharField(label='短信码', max_length=100)
