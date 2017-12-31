@@ -31,6 +31,13 @@ class BaseModel(models.Model):
         return cls.objects.all().order_by('serial_number')[page*limit: (page+1)*limit]
 
 
+class MessageCode(BaseModel):
+    """用户短信码"""
+    usage = models.IntegerField('用途：0登陆，1推荐通知，2...', default=0)
+    mobile = models.IntegerField('手机号', default=0)
+    code = models.IntegerField('四位短信码', default=0)
+
+
 class Users(BaseModel):
     """用户信息表"""
     # 个人必备信息
