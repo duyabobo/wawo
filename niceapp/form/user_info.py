@@ -4,7 +4,7 @@
 from django import forms
 
 APPEARANCE_CHOICE = (
-    (0, '无'),
+    (0, '不要求'),
     (1, '干净整洁'),
     (2, '阳光自信'),
     (3, '英俊帅气')
@@ -12,7 +12,7 @@ APPEARANCE_CHOICE = (
 
 
 CHARACTER_CHOICE = (
-    (0, '无'),
+    (0, '不明显'),
     (1, '自信'),
     (2, '好强'),
     (3, '暴躁'),

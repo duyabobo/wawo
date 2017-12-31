@@ -116,3 +116,21 @@ class UserRelation(BaseModel):
 
     class Meta:
         db_table = 'user_relation'
+
+
+# 性别
+FEMALE = 0
+MALE = 1
+# 账号状态
+REGISTERED = 0
+SUBMIT = 1
+REALNAME = 2
+EXPIRED = -1
+COMPLAIN = -2
+COMPLAINED = -3
+# 恋爱状态
+SINGLE = 0
+CONTACTED = 1
+UNSUITED = 2
+FALLINLOVE = 3
+SEPARATE = 4
