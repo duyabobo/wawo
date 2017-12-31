@@ -30,6 +30,9 @@ class BaseModel(models.Model):
         """
         return cls.objects.all().order_by('serial_number')[page*limit: (page+1)*limit]
 
+    class Meta:
+        abstract = True
+
 
 class MessageCode(BaseModel):
     """用户短信码"""
@@ -53,7 +56,7 @@ class MessageCode(BaseModel):
         return message_code['user_id'] if message_code else None
 
 
-class Users(User):
+class Users(BaseModel):
     """用户信息表"""
     # 个人必备信息
     mobile = models.IntegerField('手机号', default=0)
