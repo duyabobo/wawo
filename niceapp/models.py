@@ -95,6 +95,14 @@ class Users(User):
         """
         return cls.objects.filter(id=user_id).first()
 
+    @classmethod
+    def get_test_user(cls):
+        """
+        获取测试用户
+        :return:
+        """
+        return cls.objects.first()
+
 
 class UserRelation(BaseModel):
     """用户关系表"""
