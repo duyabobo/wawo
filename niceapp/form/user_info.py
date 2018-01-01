@@ -86,7 +86,6 @@ class UserForm(forms.Form):
     disgust = forms.ChoiceField(label='反感', choices=DISGUST_CHOICE)
     wealth = forms.IntegerField(label='每月生活费(元)')
     custom = forms.CharField(label='自定义', max_length=255)
-    threshold_fee = forms.IntegerField(label='门槛费')
 
 
 class RealForm(forms.Form):
