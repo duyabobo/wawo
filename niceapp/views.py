@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login, logout
 from form.login import AuthForm
 from form.user_info import UserForm
 from models import *
+from utils.users import get_invite_boy_condition
 
 
 def access_login(request):
@@ -72,9 +73,8 @@ def index(request):
                 # user_form = UserForm(suitable_girl_expection)
                 # return render(request, 'expection_content.html', {'user_form': user_form})
             else:
-                pass  # todo
-                # invite_boy_condition = get_invite_boy_condition()
-                # user_form = UserForm(invite_boy_condition)
-                # return render(request, 'inviter_content.html', {'user_form': user_form})
+                invite_boy_condition = get_invite_boy_condition(user.id)
+                invite_boy_form = UserForm(invite_boy_condition)
+                return render(request, 'inviter_content.html', {'invite_boy_form': invite_boy_form})
     else:
         return render(request, 'error.html')

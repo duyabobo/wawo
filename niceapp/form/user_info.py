@@ -3,6 +3,15 @@
 # __created_at__ = '2017/12/31'
 from django import forms
 
+CITY_CHOICE = (
+    ('北京', '北京'),
+    ('上海', '上海'),
+    ('广州', '广州'),
+    ('深圳', '深圳'),
+    ('杭州', '杭州')
+)
+
+
 APPEARANCE_CHOICE = (
     (0, '无'),
     (1, '干净整洁'),
@@ -74,8 +83,8 @@ DISGUST_CHOICE = (
 
 class UserForm(forms.Form):
     """用户基本信息表单"""
-    city = forms.CharField(label='城市名', max_length=100)
-    school = forms.CharField(label='学校名', max_length=100)
+    city = forms.ChoiceField(label='城市名', choices=CITY_CHOICE)
+    school = forms.CharField(label='学校名', max_length=200)
     stature = forms.IntegerField(label='身高(cm)')
     weight = forms.IntegerField(label='体重(kg)')
     appearance = forms.ChoiceField(label='相貌', choices=APPEARANCE_CHOICE)
@@ -83,12 +92,4 @@ class UserForm(forms.Form):
     hobby = forms.ChoiceField(label='兴趣', choices=HOBBY_CHOICE)
     speciality = forms.ChoiceField(label='特长', choices=SPECIALITY_CHOICE)
     habit = forms.ChoiceField(label='习惯', choices=HABIT_CHOICE)
-    disgust = forms.ChoiceField(label='反感', choices=DISGUST_CHOICE)
     wealth = forms.IntegerField(label='每月生活费(元)')
-    custom = forms.CharField(label='自定义', max_length=255)
-
-
-class RealForm(forms.Form):
-    """实名制信息表单"""
-    city = forms.CharField(label='城市名', max_length=100)
-    school = forms.CharField(label='学校名', max_length=100)
