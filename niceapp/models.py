@@ -78,7 +78,7 @@ class Users(AbstractUser):
     mobile = models.IntegerField('手机号', default=0)
     sex = models.IntegerField('性别: 0女 1男', default=0)
     info_status = models.IntegerField('账号状态: 0已注册，1已提交信息，2已实名制，'
-                                      '-1信息已过期（非恋爱状态同时一年内未登陆网站），-2已被投诉，-3已被封号', default=0)
+                                      '-1信息已过期（非恋爱状态同时一年内未登陆网站），-2已被投诉，-3已被封号，-4已锁定', default=0)
     love_status = models.IntegerField('恋爱状态：0未找到，1已接触，2不合适，3已恋爱，4已分手', default=0)
     # 条件数据：女的就是期望男友条件数据，男的就是自身的条件数据
     city = models.CharField('城市名', max_length=100, default='')
@@ -161,6 +161,8 @@ class Users(AbstractUser):
         user = Users.get_one_by_mobile(mobile)
         if not user:  # todo 需要检查是否用户信息过期了
             user = Users(mobile=mobile, sex=sex, username=random.random())
+        else:
+            user.sex = sex
         user.save()
         return user
 
@@ -185,6 +187,7 @@ REALNAME = 2
 EXPIRED = -1
 COMPLAIN = -2
 COMPLAINED = -3
+LOCKED = -4
 # 恋爱状态
 SINGLE = 0
 CONTACTED = 1

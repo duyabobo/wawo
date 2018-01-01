@@ -59,7 +59,7 @@ def index(request):
             user_form = UserForm(request.POST)
             if user_form.is_valid():
                 Users.update_one_record(user.id, **user_form.cleaned_data)
-                Users.update_one_record_one_field(user.id, info_status=1)
+                Users.update_one_record_one_field(user.id, info_status=SUBMIT)
                 return redirect("/index")
             else:
                 return HttpResponse(json.dumps(user_form.errors))
@@ -68,7 +68,11 @@ def index(request):
             return render(request, 'submit_content.html', {'user_form': user_form, 'sex': user.sex})
     elif info_status in (SUBMIT, REALNAME):  # 已填写用户信息或期望信息
         if request.method == 'POST':
-            pass  # todo 发起了邀请或者接受了邀请
+            Users.update_one_record_one_field(user.id, info_status=LOCKED)
+            if user.sex == MALE:
+                return render(request, 'invite_success.html')
+            else:
+                return render(request, 'access_success.html')
         else:
             if user.sex == MALE:
                 suitable_girl_expection = get_suitable_girl_expection(user.id)
@@ -84,5 +88,10 @@ def index(request):
                     request, 'inviter_content.html',
                     {'invite_boy_form': invite_boy_form, 'invite_boy_condition': invite_boy_condition}
                 )
+    elif info_status == LOCKED:
+        if user.sex == MALE:
+            return render(request, 'invite_success.html')
+        else:
+            return render(request, 'access_success.html')
     else:
         return render(request, 'error.html')
