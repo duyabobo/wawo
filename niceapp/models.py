@@ -107,6 +107,24 @@ class Users(AbstractUser):
         """
         return cls.objects.first()
 
+    @classmethod
+    def update_one_record(cls, user_id, **kwargs):
+        """
+        更新用户信息
+        :param user_id:
+        :return:
+        """
+        return cls.objects.filter(id=user_id).update(**kwargs)
+
+    @classmethod
+    def update_one_record_one_field(cls, user_id, **kwargs):
+        """
+        更新用户某个字段
+        :param user_id:
+        :return:
+        """
+        return cls.objects.filter(id=user_id).update(**kwargs)
+
 
 class UserRelation(BaseModel):
     """用户关系表"""

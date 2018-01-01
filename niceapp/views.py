@@ -26,8 +26,7 @@ def access_login(request):
             if not user:  # 测试用户
                 user = Users.get_test_user()
             login(request, user)  # 验证成功之后登录
-            user.sex = sex  # todo function of model or orm
-            user.save()
+            Users.update_one_record(user.id, sex=sex)
             return redirect('/index')
     else:
         auth_form = AuthForm()
@@ -52,13 +51,18 @@ def index(request):
     :return:
     """
     user = request.user
-    if user.info_status in (REGISTERED, EXPIRED):  # 填写用户信息或者期望信息
+    info_status = int(user.info_status)
+    if info_status in (REGISTERED, EXPIRED):  # 填写用户信息或者期望信息
         if request.method == 'POST':
-            pass  # todo
+            user_form = UserForm(request.POST)
+            if user_form.is_valid():
+                Users.update_one_record(user.id, **user_form.cleaned_data)
+                Users.update_one_record_one_field(user.id, info_status=1)
+                return redirect("/index")
         else:
             user_form = UserForm()
             return render(request, 'submit_content.html', {'user_form': user_form, 'sex': user.sex})
-    elif user.info_status in (SUBMIT, REALNAME):  # 已填写用户信息或期望信息
+    elif info_status in (SUBMIT, REALNAME):  # 已填写用户信息或期望信息
         if request.method == 'POST':
             pass  # todo
         else:
