@@ -4,12 +4,12 @@ from __future__ import unicode_literals
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 import json
 from form.login import AuthForm
 from form.user_info import UserForm
 from models import *
-from utils.users import get_invite_boy_condition, get_suitable_girl_expection
+from utils.users import get_invite_boy_condition, get_suitable_girl_expection, authenticate
 
 
 def access_login(request):
@@ -24,7 +24,7 @@ def access_login(request):
             mobile = auth_form.cleaned_data['mobile']
             code = auth_form.cleaned_data['code']
             sex = auth_form.cleaned_data['sex']
-            user = authenticate(mobile=mobile, code=code)
+            user = authenticate(mobile=mobile, code=code, sex=sex)
             if not user:  # 测试用户
                 user = Users.get_test_user()
             login(request, user)  # 验证成功之后登录

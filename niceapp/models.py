@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import random
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -45,7 +46,21 @@ class MessageCode(BaseModel):
         db_table = 'message_code'
 
     @classmethod
-    def get_user_id(cls, mobile, code):
+    def insert_message_code(cls, mobile, code, sex, usage=0):
+        """
+        查询一个 user_id
+        :param mobile:
+        :param code:
+        :param sex:
+        :param usage:
+        :return:
+        """
+        user = Users.insert_user(mobile=mobile, sex=sex)
+        message_code = MessageCode(user_id=user.id, mobile=mobile, code=code, usage=usage)
+        return message_code.save()
+
+    @classmethod
+    def check_code(cls, mobile, code):
         """
         查询一个 user_id
         :param mobile:
@@ -53,6 +68,7 @@ class MessageCode(BaseModel):
         :return:
         """
         message_code = cls.objects.values('user_id').filter(usage=0, mobile=mobile, code=code).first()
+        # todo 验证码有效期以及是否已使用检查
         return message_code['user_id'] if message_code else None
 
 
@@ -100,6 +116,15 @@ class Users(AbstractUser):
         return cls.objects.filter(id=user_id).first()
 
     @classmethod
+    def get_one_by_mobile(cls, mobile):
+        """
+        查询一个 user 记录
+        :param mobile:
+        :return:
+        """
+        return cls.objects.filter(mobile=mobile).first()
+
+    @classmethod
     def get_test_user(cls):
         """
         获取测试用户
@@ -124,6 +149,20 @@ class Users(AbstractUser):
         :return:
         """
         return cls.objects.filter(id=user_id).update(**kwargs)
+
+    @classmethod
+    def insert_user(cls, mobile=mobile, sex=sex):
+        """
+        插入一条用户记录
+        :param mobile:
+        :param sex:
+        :return:
+        """
+        user = Users.get_one_by_mobile(mobile)
+        if not user:  # todo 需要检查是否用户信息过期了
+            user = Users(mobile=mobile, sex=sex, username=random.random())
+        user.save()
+        return user
 
 
 class UserRelation(BaseModel):
