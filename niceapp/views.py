@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth import authenticate, login, logout
+import json
 from form.login import AuthForm
 from form.user_info import UserForm
 from models import *
-from utils.users import get_invite_boy_condition
+from utils.users import get_invite_boy_condition, get_suitable_girl_expection
 
 
 def access_login(request):
@@ -60,21 +61,28 @@ def index(request):
                 Users.update_one_record(user.id, **user_form.cleaned_data)
                 Users.update_one_record_one_field(user.id, info_status=1)
                 return redirect("/index")
+            else:
+                return HttpResponse(json.dumps(user_form.errors))
         else:
             user_form = UserForm()
             return render(request, 'submit_content.html', {'user_form': user_form, 'sex': user.sex})
     elif info_status in (SUBMIT, REALNAME):  # 已填写用户信息或期望信息
         if request.method == 'POST':
-            pass  # todo
+            pass  # todo 发起了邀请或者接受了邀请
         else:
             if user.sex == MALE:
-                pass  # todo
-                # suitable_girl_expection = get_suitable_girl_expection()
-                # user_form = UserForm(suitable_girl_expection)
-                # return render(request, 'expection_content.html', {'user_form': user_form})
+                suitable_girl_expection = get_suitable_girl_expection(user.id)
+                suitable_girl_form = UserForm(suitable_girl_expection)
+                return render(
+                    request, 'expection_content.html',
+                    {'suitable_girl_form': suitable_girl_form, 'suitable_girl_expection': suitable_girl_expection}
+                )
             else:
                 invite_boy_condition = get_invite_boy_condition(user.id)
                 invite_boy_form = UserForm(invite_boy_condition)
-                return render(request, 'inviter_content.html', {'invite_boy_form': invite_boy_form})
+                return render(
+                    request, 'inviter_content.html',
+                    {'invite_boy_form': invite_boy_form, 'invite_boy_condition': invite_boy_condition}
+                )
     else:
         return render(request, 'error.html')

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}她的期望如下，您很合适哦{% endblock %}
+{% block form %}
+    {% if suitable_girl_expection %}
+        {{suitable_girl_form.as_p}}
+        <input type="submit" value = "支付10元门槛费发起邀请" />
+        <br>
+        如果女生接受，您将收到女生的联系方式。<br>
+        如果女生三天内不接受，门槛费将在24小时后返还。
+    {% else %}
+        还没有发现合适的女生，如有我们会第一时间短信通知您。<br>
+    {% endif %}
+{% endblock %}

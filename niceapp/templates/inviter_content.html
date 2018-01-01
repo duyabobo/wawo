@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
 
-{% block title %}收到的邀请{% endblock %}
+{% block title %}有人邀请您哟，下面是他的信息{% endblock %}
 {% block form %}
-    {% if invite_boy_form %}
+    {% if invite_boy_condition %}
         {{invite_boy_form.as_p}}
         <input type="submit" value = "接受邀请" />
+        <br>
+        接受邀请后，您的联系方式将会发送给男生。<br>
+        同时，您将不能接收其他邀请。
     {% else %}
-        您还没有收到邀请，敬请期待。
-        如果有男生发出邀请，系统也会短信通知您哦。
-        如果长时间没有收到邀请，可以修改一下自己的期望条件，多给男生点希望嘛，哈哈。
+        您还没有收到邀请，如有我们会第一时间短信通知您。<br>
     {% endif %}
 {% endblock %}

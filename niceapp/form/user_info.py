@@ -83,7 +83,7 @@ DISGUST_CHOICE = (
 
 class UserForm(forms.Form):
     """用户基本信息表单"""
-    city = forms.ChoiceField(label='城市名', choices=CITY_CHOICE)
+    # city = forms.ChoiceField(label='城市名', choices=CITY_CHOICE, initial='北京')
     school = forms.CharField(label='学校名', max_length=200)
     stature = forms.IntegerField(label='身高(cm)')
     weight = forms.IntegerField(label='体重(kg)')
