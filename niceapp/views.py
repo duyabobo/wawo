@@ -54,7 +54,7 @@ def index(request):
     """
     user = request.user
     info_status = int(user.info_status)
-    if info_status in (REGISTERED, EXPIRED):  # 填写用户信息或者期望信息
+    if info_status == REGISTERED:
         if request.method == 'POST':
             user_form = UserForm(request.POST)
             if user_form.is_valid():
@@ -66,9 +66,9 @@ def index(request):
         else:
             user_form = UserForm()
             return render(request, 'submit_content.html', {'user_form': user_form, 'sex': user.sex})
-    elif info_status in (SUBMIT, REALNAME):  # 已填写用户信息或期望信息
+    elif info_status == SUBMIT:
         if request.method == 'POST':
-            Users.update_one_record_one_field(user.id, info_status=LOCKED)
+            Users.update_one_record_one_field(user.id, info_status=CONNECTED)
             if user.sex == MALE:
                 return render(request, 'invite_success.html')
             else:
@@ -88,10 +88,12 @@ def index(request):
                     request, 'inviter_content.html',
                     {'invite_boy_form': invite_boy_form, 'invite_boy_condition': invite_boy_condition}
                 )
-    elif info_status == LOCKED:
+    elif info_status == CONNECTED:
         if user.sex == MALE:
             return render(request, 'invite_success.html')
         else:
             return render(request, 'access_success.html')
+    elif info_status == FALLINLOVE:
+        render(request, 'fall_in_love.html')
     else:
-        return render(request, 'error.html')
+        return render(request, 'real_name.html')
