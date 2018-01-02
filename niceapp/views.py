@@ -70,7 +70,7 @@ def connect(request):
     邀请或被邀请，然后接受邀请进入联系阶段
     :param request:
     :return:
-    """
+    """  # todo 拆分成俩接口，一个是男生提出邀请，一个是女生接收邀请
     user = request.user
     if user.info_status == SENTINVITE:
         return render(request, 'invite_success.html')
