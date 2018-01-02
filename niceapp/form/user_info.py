@@ -3,12 +3,18 @@
 # __created_at__ = '2017/12/31'
 from django import forms
 
+SEX_CHOICE = (
+    (0, '女'),
+    (1, '男')
+)
+
+
 CITY_CHOICE = (
-    ('北京', '北京'),
-    ('上海', '上海'),
-    ('广州', '广州'),
-    ('深圳', '深圳'),
-    ('杭州', '杭州')
+    (0, '北京'),
+    (1, '上海'),
+    (2, '广州'),
+    (3, '深圳'),
+    (4, '杭州')
 )
 
 
@@ -83,8 +89,8 @@ DISGUST_CHOICE = (
 
 class UserForm(forms.Form):
     """用户基本信息表单"""
-    # city = forms.ChoiceField(label='城市名', choices=CITY_CHOICE, initial='北京')
-    school = forms.CharField(label='学校名', max_length=200)
+    city = forms.ChoiceField(label='城市', choices=CITY_CHOICE)
+    sex = forms.ChoiceField(label='我的性别', choices=SEX_CHOICE)
     stature = forms.IntegerField(label='身高(cm)')
     weight = forms.IntegerField(label='体重(kg)')
     appearance = forms.ChoiceField(label='相貌', choices=APPEARANCE_CHOICE)

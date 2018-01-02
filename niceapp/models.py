@@ -46,16 +46,15 @@ class MessageCode(BaseModel):
         db_table = 'message_code'
 
     @classmethod
-    def insert_message_code(cls, mobile, code, sex, usage=0):
+    def insert_message_code(cls, mobile, code, usage=0):
         """
         查询一个 user_id
         :param mobile:
         :param code:
-        :param sex:
         :param usage:
         :return:
         """
-        user = Users.insert_user(mobile=mobile, sex=sex)
+        user = Users.insert_user(mobile=mobile)
         message_code = MessageCode(user_id=user.id, mobile=mobile, code=code, usage=usage)
         return message_code.save()
 
@@ -80,8 +79,7 @@ class Users(AbstractUser):
     info_status = models.IntegerField('账号状态: 0已注册，1完善，2已接触，3已恋爱，-1已过期，-2已投诉，-3已被投诉', default=0)
     real_name_status = models.IntegerField('恋爱状态：0未实名，1一级实名，2二级实名，3三级实名，4四级实名', default=0)
     # 条件数据：女的就是期望男友条件数据，男的就是自身的条件数据
-    city = models.CharField('城市名', max_length=100, default='')
-    school = models.CharField('学校名', max_length=100, default='')
+    city = models.IntegerField('城市名:0北京,1上海...', default=0)
     stature = models.IntegerField('身高(cm)', default=0)
     weight = models.IntegerField('体重(kg)', default=0)
     appearance = models.IntegerField('相貌: 0不要求，1干净整洁，2阳光自信，3英俊帅气，12，13，23为组合...', default=0)
@@ -94,6 +92,7 @@ class Users(AbstractUser):
     custom = models.CharField('自定义的男生的描述人生理想啊啥的或女生自定义的一些要求', max_length=255, default='')
     threshold_fee = models.IntegerField('门槛费', default=10)
     # 实名制信息
+    school = models.CharField('学校名', max_length=100, default='')
     student_identity_card_qiniu_uri = models.CharField('学生证照片七牛云存储对应的uri', max_length=500, default='')
     name = models.CharField('姓名', max_length=20, default='')
     age = models.IntegerField('年龄', default=0)
@@ -150,18 +149,15 @@ class Users(AbstractUser):
         return cls.objects.filter(id=user_id).update(**kwargs)
 
     @classmethod
-    def insert_user(cls, mobile=mobile, sex=sex):
+    def insert_user(cls, mobile=mobile):
         """
         插入一条用户记录
         :param mobile:
-        :param sex:
         :return:
         """
         user = Users.get_one_by_mobile(mobile)
         if not user:  # todo 需要检查是否用户信息过期了
-            user = Users(mobile=mobile, sex=sex, username=random.random())
-        else:
-            user.sex = sex
+            user = Users(mobile=mobile, username=random.random())
         user.save()
         return user
 

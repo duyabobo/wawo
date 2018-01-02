@@ -3,7 +3,16 @@
 {% block title %}她的期望如下，您很合适哦{% endblock %}
 {% block form %}
     {% if suitable_girl_expection %}
-        {{suitable_girl_form.as_p}}
+        城市：{{ suitable_girl_expection.city }}<br>
+        性别：{{ suitable_girl_expection.sex }}<br>
+        身高：{{ suitable_girl_expection.stature }}<br>
+        体重：{{ suitable_girl_expection.weight }}<br>
+        相貌：{{ suitable_girl_expection.appearance }}<br>
+        性格：{{ suitable_girl_expection.character }}<br>
+        兴趣：{{ suitable_girl_expection.hobby }}<br>
+        特长：{{ suitable_girl_expection.speciality }}<br>
+        习惯：{{ suitable_girl_expection.habit }}<br>
+        每月生活费：{{ suitable_girl_expection.wealth }}<br>
         <input type="submit" value = "支付10元门槛费发起邀请" />
         <br>
         如果女生接受，您将收到女生的联系方式。<br>

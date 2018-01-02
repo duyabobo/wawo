@@ -5,15 +5,14 @@
 from niceapp.models import MessageCode, Users
 
 
-def authenticate(mobile, code, sex):
+def authenticate(mobile, code):
     """
     验证手机号和验证码，如果验证通过就创建或更新一个新用户
     :param mobile:
     :param code:
-    :param sex:
     :return:
     """
-    MessageCode.insert_message_code(mobile, code, sex)  # 这个其实应该在发短信的时候做的
+    MessageCode.insert_message_code(mobile, code)  # 这个其实应该在发短信的时候做的
     user_id = MessageCode.check_code(mobile, code)
     return Users.get_one(user_id) if user_id else None
 
@@ -26,7 +25,8 @@ def get_invite_boy_condition(user_id):
     """
     user = Users.get_one(user_id)
     return {
-        'school': user.school,
+        'city': user.city,
+        'sex': user.sex,
         'stature': user.stature,
         'weight': user.weight,
         'appearance': user.appearance,
@@ -46,7 +46,8 @@ def get_suitable_girl_expection(user_id):
     """
     user = Users.get_one(user_id)
     return {
-        'school': user.school,
+        'city': user.city,
+        'sex': user.sex,
         'stature': user.stature,
         'weight': user.weight,
         'appearance': user.appearance,

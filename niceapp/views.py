@@ -23,12 +23,8 @@ def access_login(request):
         if auth_form.is_valid():
             mobile = auth_form.cleaned_data['mobile']
             code = auth_form.cleaned_data['code']
-            sex = auth_form.cleaned_data['sex']
-            user = authenticate(mobile=mobile, code=code, sex=sex)
-            if not user:  # 测试用户
-                user = Users.get_test_user()
-            login(request, user)  # 验证成功之后登录
-            Users.update_one_record(user.id, sex=sex)
+            user = authenticate(mobile=mobile, code=code)
+            login(request, user)
             return redirect('/index')
     else:
         auth_form = AuthForm()
@@ -48,10 +44,10 @@ def access_logout(request):
 @login_required
 def index(request):
     """
-    主页
+    主页，根据 info_status 构建主逻辑
     :param request:
     :return:
-    """
+    """  # todo 拆分一下
     user = request.user
     info_status = int(user.info_status)
     if info_status == REGISTERED:
@@ -65,7 +61,7 @@ def index(request):
                 return HttpResponse(json.dumps(user_form.errors))
         else:
             user_form = UserForm()
-            return render(request, 'submit_content.html', {'user_form': user_form, 'sex': user.sex})
+            return render(request, 'submit_content.html', {'user_form': user_form})
     elif info_status == SUBMIT:
         if request.method == 'POST':
             Users.update_one_record_one_field(user.id, info_status=CONNECTED)
@@ -76,24 +72,26 @@ def index(request):
         else:
             if user.sex == MALE:
                 suitable_girl_expection = get_suitable_girl_expection(user.id)
-                suitable_girl_form = UserForm(suitable_girl_expection)
                 return render(
-                    request, 'expection_content.html',
-                    {'suitable_girl_form': suitable_girl_form, 'suitable_girl_expection': suitable_girl_expection}
+                    request, 'expection_content.html', {'suitable_girl_expection': suitable_girl_expection}
                 )
             else:
                 invite_boy_condition = get_invite_boy_condition(user.id)
-                invite_boy_form = UserForm(invite_boy_condition)
                 return render(
-                    request, 'inviter_content.html',
-                    {'invite_boy_form': invite_boy_form, 'invite_boy_condition': invite_boy_condition}
+                    request, 'inviter_content.html', {'invite_boy_condition': invite_boy_condition}
                 )
     elif info_status == CONNECTED:
-        if user.sex == MALE:
-            return render(request, 'invite_success.html')
+        if request.method == 'POST':
+            render(request, 'fall_in_love.html')  # todo 区分是投诉还是坠入爱河
         else:
-            return render(request, 'access_success.html')
+            if user.sex == MALE:
+                return render(request, 'invite_success.html')
+            else:
+                return render(request, 'access_success.html')
     elif info_status == FALLINLOVE:
-        render(request, 'fall_in_love.html')
+        if request.method == 'POST':
+            render(request, 'real_name.html')
+        else:
+            render(request, 'fall_in_love.html')
     else:
         return render(request, 'real_name.html')
