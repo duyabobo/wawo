@@ -78,7 +78,7 @@ def connect(request):
         return redirect("/")
     if request.method == 'POST':
         if user.sex == MALE:
-            Users.update_one_record_one_field(user.id, info_status=SENTINVITE)
+            Users.update_one_record_one_field(user.id, info_status=SENTINVITE)  # todo 还需要修改女生的状态
             return render(request, 'invite_success.html')
         else:
             Users.update_one_record_one_field(user.id, info_status=CONNECTED)  # todo 还需要修改男生的状态
