@@ -64,10 +64,11 @@ def index(request):
             return render(request, 'submit_content.html', {'user_form': user_form})
     elif info_status == SUBMIT:
         if request.method == 'POST':
-            Users.update_one_record_one_field(user.id, info_status=CONNECTED)
             if user.sex == MALE:
+                Users.update_one_record_one_field(user.id, info_status=SENTINVITE)
                 return render(request, 'invite_success.html')
             else:
+                Users.update_one_record_one_field(user.id, info_status=CONNECTED)
                 return render(request, 'access_success.html')
         else:
             if user.sex == MALE:
@@ -82,7 +83,7 @@ def index(request):
                 )
     elif info_status == CONNECTED:
         if request.method == 'POST':
-            render(request, 'fall_in_love.html')  # todo 区分是投诉还是坠入爱河
+            return render(request, 'fall_in_love.html')  # todo 区分是投诉还是坠入爱河
         else:
             if user.sex == MALE:
                 return render(request, 'invite_success.html')
