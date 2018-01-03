@@ -42,9 +42,20 @@ def access_logout(request):
 
 
 @login_required
-def submit(request):
+def content_page(request):
     """
-    补充信息，获取推荐异性
+    补充信息
+    :param request:
+    :return:
+    """
+    user_form = UserForm()
+    return render(request, 'submit_content.html', {'user_form': user_form})
+
+
+@login_required
+def submit_content(request):
+    """
+    存储用户上传的信息（期望条件/自身条件）
     :param request:
     :return:
     """
@@ -56,50 +67,119 @@ def submit(request):
         if user_form.is_valid():
             Users.update_one_record(user.id, **user_form.cleaned_data)
             Users.update_one_record_one_field(user.id, info_status=SUBMIT)
-            return redirect("/connect")
+            if user.sex == MALE:
+                return redirect("/suitable_girl_page")
+            else:
+                return redirect("/invite_boy_page")
         else:
             return HttpResponse(json.dumps(user_form.errors))
     else:
-        user_form = UserForm()
-        return render(request, 'submit_content.html', {'user_form': user_form})
+        return render(request, '404.html')
 
 
 @login_required
-def connect(request):
+def girl_after_submit(request):
+    """
+    女生填完期望信息的等待邀请状态
+    :param request:
+    :return:
+    """
+    return render(request, 'girl_after_submit.html')
+
+
+@login_required
+def suitable_girl_page(request):
+    """
+    查看合适的女孩
+    :param request:
+    :return:
+    """
+    user = request.user
+    if user.info_status != SUBMIT:
+        return redirect("/")
+    suitable_girl_expection = get_suitable_girl_expection(user.id)  # todo 如果没有合适的女生？？
+    return render(
+        request, 'expection_content.html', {'suitable_girl_expection': suitable_girl_expection}
+    )
+
+
+@login_required
+def choice_suitable_girl(request):
+    """
+    选择合适的女生
+    :param request:
+    :return:
+    """
+    user = request.user
+    if user.info_status != SUBMIT:
+        return redirect("/")
+    if request.method == 'POST':
+        Users.update_one_record_one_field(user.id, info_status=INVITE)  # todo 还需要同步修改女生的状态为 INVITE
+        return render(request, 'invite_success.html')
+    else:
+        return render(request, '404.html')
+
+
+@login_required
+def boy_after_invite(request):
+    """
+    男生等待邀请被接收的状态
+    :param request:
+    :return:
+    """
+    return render(request, 'boy_after_invite.html')
+
+
+@login_required
+def invite_boy_page(request):
+    """
+    查看邀请自己的男生
+    :param request:
+    :return:
+    """
+    user = request.user
+    if user.info_status != INVITE:
+        return redirect("/")
+    invite_boy_condition = get_invite_boy_condition(user.id)  # todo 如果没有邀请的男生
+    return render(
+        request, 'inviter_content.html', {'invite_boy_condition': invite_boy_condition}
+    )
+
+
+@login_required
+def accept_invite_boy(request):  # todo 还需要一个 拒绝邀请的 接口
+    """
+    接受男生邀请
+    :param request:
+    :return:
+    """
+    user = request.user
+    if user.info_status != INVITE:
+        return redirect("/")
+    if request.method == 'POST':
+        Users.update_one_record_one_field(user.id, info_status=CONNECTED)  # todo 还需要同步修改男生的状态为 CONNECTED
+        return redirect("/connect_page")
+    else:
+        return render(request, '404.html')
+
+
+@login_required
+def connect_page(request):
     """
     邀请或被邀请，然后接受邀请进入联系阶段
     :param request:
     :return:
-    """  # todo 拆分成俩接口，一个是男生提出邀请，一个是女生接收邀请
+    """
     user = request.user
-    if user.info_status == SENTINVITE:
-        return render(request, 'invite_success.html')
-    if user.info_status != SUBMIT:
+    if user.info_status != CONNECTED:
         return redirect("/")
-    if request.method == 'POST':
-        if user.sex == MALE:
-            Users.update_one_record_one_field(user.id, info_status=SENTINVITE)  # todo 还需要修改女生的状态
-            return render(request, 'invite_success.html')
-        else:
-            Users.update_one_record_one_field(user.id, info_status=CONNECTED)  # todo 还需要修改男生的状态
-            return render(request, 'access_success.html')
-    else:
-        if user.sex == MALE:
-            suitable_girl_expection = get_suitable_girl_expection(user.id)
-            return render(
-                request, 'expection_content.html', {'suitable_girl_expection': suitable_girl_expection}
-            )
-        else:
-            invite_boy_condition = get_invite_boy_condition(user.id)
-            return render(
-                request, 'inviter_content.html', {'invite_boy_condition': invite_boy_condition}
-            )
+    return render(request, 'connect_success.html')
 
 
 @login_required
-def fall_in_love(request):
+def connect_to_fall_in_love(request):  # todo 还需要进入不合适接口/进入投诉状态的接口
     """
-    进入热恋状态，或者进入投诉流程
+    进入恋爱状态
     :param request:
     :return:
     """
@@ -107,18 +187,29 @@ def fall_in_love(request):
     if user.info_status != CONNECTED:
         return redirect("/")
     if request.method == 'POST':
-        return render(request, 'fall_in_love.html')  # todo 区分是投诉还是坠入爱河
+        Users.update_one_record_one_field(user.id, info_status=FALLINLOVE)  # todo 男生女生需要同步变化状态
+        return render(request, 'fall_in_love.html')
     else:
-        if user.sex == MALE:
-            return render(request, 'invite_success.html')
-        else:
-            return render(request, 'access_success.html')
+        return render(request, '404.html')
 
 
 @login_required
-def be_in_love(request):
+def love_page(request):
     """
-    热恋后状态
+    恋爱页面
+    :param request:
+    :return:
+    """
+    user = request.user
+    if user.info_status != FALLINLOVE:
+        return redirect("/")
+    return render(request, 'fall_in_love.html')
+
+
+@login_required
+def break_up_after_love(request):
+    """
+    恋爱后分手
     :param request:
     :return:
     """
@@ -126,9 +217,10 @@ def be_in_love(request):
     if user.info_status != FALLINLOVE:
         return redirect("/")
     if request.method == 'POST':
-        return render(request, 'fall_in_love.html')  # todo 区分是投诉还是深入爱河
+        Users.update_one_record_one_field(user.id, info_status=SUBMIT)  # todo 男生女生需要同步变化状态
+        return redirect("/")
     else:
-        return render(request, 'fall_in_love.html')
+        return render(request, '404.html')
 
 
 @login_required
@@ -140,15 +232,22 @@ def index(request):
     """  # todo 拆分后，每个 api 应该只支持一个 method
     user = request.user
     info_status = int(user.info_status)
+    sex = user.sex
     if info_status == REGISTERED:
-        return redirect("/submit")
+        return redirect("/content_page")
     elif info_status == SUBMIT:
-        return redirect("/connect")
-    elif info_status == SENTINVITE:
-        return redirect("/connect")
+        if sex == MALE:
+            return redirect("/suitable_girl_page")
+        else:
+            return redirect("/girl_after_submit")
+    elif info_status == INVITE:
+        if sex == MALE:
+            return redirect("/boy_after_invite")
+        else:
+            return redirect("/invite_boy_page")
     elif info_status == CONNECTED:
-        return redirect("/fall_in_love")
+        return redirect("/connect_page")
     elif info_status == FALLINLOVE:
-        return redirect("/be_in_love")
+        return redirect("/love_page")
     else:
-        return render(request, 'error.html')
+        return render(request, 'realname.html')
