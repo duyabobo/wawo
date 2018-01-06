@@ -48,6 +48,9 @@ def content_page(request):
     :param request:
     :return:
     """
+    user = request.user
+    if user.info_status != REGISTERED:
+        return redirect("/")
     user_form = UserForm()
     return render(request, 'submit_content.html', {'user_form': user_form})
 
@@ -84,6 +87,9 @@ def girl_after_submit(request):
     :param request:
     :return:
     """
+    user = request.user
+    if user.info_status != SUBMIT:
+        return redirect("/")
     return render(request, 'girl_after_submit.html')
 
 
@@ -127,6 +133,9 @@ def boy_after_invite(request):
     :param request:
     :return:
     """
+    user = request.user
+    if user.info_status != INVITE:
+        return redirect("/")
     return render(request, 'boy_after_invite.html')
 
 
@@ -147,9 +156,9 @@ def invite_boy_page(request):
 
 
 @login_required
-def accept_invite_boy(request):  # todo 还需要一个 拒绝邀请的 接口
+def accept_invite_boy(request):
     """
-    接受男生邀请
+    接受男生邀请, 不需要拒绝接口，默认一天之后自动拒绝，可以限制女生拒绝的盲目性
     :param request:
     :return:
     """
@@ -177,7 +186,7 @@ def connect_page(request):
 
 
 @login_required
-def connect_to_fall_in_love(request):  # todo 还需要进入不合适接口/进入投诉状态的接口
+def connect_to_fall_in_love(request):
     """
     进入恋爱状态
     :param request:
@@ -189,6 +198,40 @@ def connect_to_fall_in_love(request):  # todo 还需要进入不合适接口/进
     if request.method == 'POST':
         Users.update_one_record_one_field(user.id, info_status=FALLINLOVE)  # todo 男生女生需要同步变化状态
         return render(request, 'fall_in_love.html')
+    else:
+        return render(request, '404.html')
+
+
+@login_required
+def connect_to_not_fit(request):
+    """
+    接触后不合适
+    :param request:
+    :return:
+    """
+    user = request.user
+    if user.info_status != CONNECTED:
+        return redirect("/")
+    if request.method == 'POST':
+        Users.update_one_record_one_field(user.id, info_status=SUBMIT)  # todo 男生女生需要同步变化状态
+        return redirect("/")
+    else:
+        return render(request, '404.html')
+
+
+@login_required
+def connect_to_complain(request):
+    """
+    接触后投诉
+    :param request:
+    :return:
+    """
+    user = request.user
+    if user.info_status != CONNECTED:
+        return redirect("/")
+    if request.method == 'POST':
+        Users.update_one_record_one_field(user.id, info_status=COMPLAIN)  # todo 男生女生需要同步变化状态
+        return redirect("/")
     else:
         return render(request, '404.html')
 
@@ -209,7 +252,7 @@ def love_page(request):
 @login_required
 def break_up_after_love(request):
     """
-    恋爱后分手
+    恋爱后分手，分手后没有抱怨入口，因为可以防止进入恋爱状态的盲目性
     :param request:
     :return:
     """
