@@ -229,7 +229,7 @@ def index(request):
     主页，根据 info_status 构建主逻辑
     :param request:
     :return:  
-    """  # todo 拆分后，每个 api 应该只支持一个 method
+    """
     user = request.user
     info_status = int(user.info_status)
     sex = user.sex
