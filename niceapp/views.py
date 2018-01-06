@@ -10,8 +10,10 @@ from form.login import AuthForm
 from form.user_info import UserForm
 from models import *
 from utils.users import get_invite_boy_condition, get_suitable_girl_expection, authenticate
+from utils.log import logger
 
 
+@logger(None)
 def access_login(request):
     """
     登陆view
@@ -31,6 +33,7 @@ def access_login(request):
         return render(request, 'login.html', {'auth_form': auth_form})
 
 
+@logger(None)
 def access_logout(request):
     """
     登出view
@@ -41,6 +44,7 @@ def access_logout(request):
     return redirect("/login")
 
 
+@logger(REGISTERED)
 @login_required
 def content_page(request):
     """
@@ -48,13 +52,11 @@ def content_page(request):
     :param request:
     :return:
     """
-    user = request.user
-    if user.info_status != REGISTERED:
-        return redirect("/")
     user_form = UserForm()
     return render(request, 'submit_content.html', {'user_form': user_form})
 
 
+@logger(REGISTERED)
 @login_required
 def submit_content(request):
     """
@@ -63,8 +65,6 @@ def submit_content(request):
     :return:
     """
     user = request.user
-    if user.info_status != REGISTERED:
-        return redirect("/")
     if request.method == 'POST':
         user_form = UserForm(request.POST)
         if user_form.is_valid():
@@ -80,6 +80,7 @@ def submit_content(request):
         return render(request, '404.html')
 
 
+@logger(SUBMIT)
 @login_required
 def girl_after_submit(request):
     """
@@ -87,12 +88,10 @@ def girl_after_submit(request):
     :param request:
     :return:
     """
-    user = request.user
-    if user.info_status != SUBMIT:
-        return redirect("/")
     return render(request, 'girl_after_submit.html')
 
 
+@logger(SUBMIT)
 @login_required
 def suitable_girl_page(request):
     """
@@ -101,8 +100,6 @@ def suitable_girl_page(request):
     :return:
     """
     user = request.user
-    if user.info_status != SUBMIT:
-        return redirect("/")
     suitable_girl_expection = get_suitable_girl_expection(user.id)
     UserRelation.insert_or_update_user_relation(user.id, suitable_girl_expection['id'], BOY_READ)
     return render(
@@ -110,6 +107,7 @@ def suitable_girl_page(request):
     )
 
 
+@logger(SUBMIT)
 @login_required
 def choice_suitable_girl(request):
     """
@@ -118,8 +116,6 @@ def choice_suitable_girl(request):
     :return:
     """
     user = request.user
-    if user.info_status != SUBMIT:
-        return redirect("/")
     if request.method == 'POST':
         Users.update_one_record_one_field(user.id, info_status=INVITE)
         choiced_girl_uid = UserRelation.get_one_user_relation_with_boy_id(user.id)
@@ -130,6 +126,7 @@ def choice_suitable_girl(request):
         return render(request, '404.html')
 
 
+@logger(INVITE)
 @login_required
 def boy_after_invite(request):
     """
@@ -137,12 +134,10 @@ def boy_after_invite(request):
     :param request:
     :return:
     """
-    user = request.user
-    if user.info_status != INVITE:
-        return redirect("/")
     return render(request, 'boy_after_invite.html')
 
 
+@logger(INVITE)
 @login_required
 def invite_boy_page(request):
     """
@@ -151,8 +146,6 @@ def invite_boy_page(request):
     :return:
     """
     user = request.user
-    if user.info_status != INVITE:
-        return redirect("/")
     invite_boy_condition = get_invite_boy_condition(user.id)
     UserRelation.insert_or_update_user_relation(invite_boy_condition['id'], user.id, GRIL_READ)
     return render(
@@ -160,6 +153,7 @@ def invite_boy_page(request):
     )
 
 
+@logger(INVITE)
 @login_required
 def accept_invite_boy(request):
     """
@@ -168,8 +162,6 @@ def accept_invite_boy(request):
     :return:
     """
     user = request.user
-    if user.info_status != INVITE:
-        return redirect("/")
     if request.method == 'POST':
         Users.update_one_record_one_field(user.id, info_status=CONNECTED)
         invite_boy_uid = UserRelation.get_one_user_relation_with_gril_id(user.id)
@@ -180,6 +172,7 @@ def accept_invite_boy(request):
         return render(request, '404.html')
 
 
+@logger(CONNECTED)
 @login_required
 def connect_page(request):
     """
@@ -187,12 +180,10 @@ def connect_page(request):
     :param request:
     :return:
     """
-    user = request.user
-    if user.info_status != CONNECTED:
-        return redirect("/")
     return render(request, 'connect_success.html')
 
 
+@logger(CONNECTED)
 @login_required
 def connect_to_fall_in_love(request):
     """
@@ -201,8 +192,6 @@ def connect_to_fall_in_love(request):
     :return:
     """
     user = request.user
-    if user.info_status != CONNECTED:
-        return redirect("/")
     if request.method == 'POST':
         Users.update_one_record_one_field(user.id, info_status=FALLINLOVE)
         if user.sex == MALE:
@@ -218,6 +207,7 @@ def connect_to_fall_in_love(request):
         return render(request, '404.html')
 
 
+@logger(CONNECTED)
 @login_required
 def connect_to_not_fit(request):
     """
@@ -226,8 +216,6 @@ def connect_to_not_fit(request):
     :return:
     """
     user = request.user
-    if user.info_status != CONNECTED:
-        return redirect("/")
     if request.method == 'POST':
         Users.update_one_record_one_field(user.id, info_status=SUBMIT)
         if user.sex == MALE:
@@ -243,6 +231,7 @@ def connect_to_not_fit(request):
         return render(request, '404.html')
 
 
+@logger(CONNECTED)
 @login_required
 def connect_to_complain(request):
     """
@@ -251,8 +240,6 @@ def connect_to_complain(request):
     :return:
     """
     user = request.user
-    if user.info_status != CONNECTED:
-        return redirect("/")
     if request.method == 'POST':
         Users.update_one_record_one_field(user.id, info_status=COMPLAIN)
         if user.sex == MALE:
@@ -268,6 +255,7 @@ def connect_to_complain(request):
         return render(request, '404.html')
 
 
+@logger(FALLINLOVE)
 @login_required
 def love_page(request):
     """
@@ -275,12 +263,10 @@ def love_page(request):
     :param request:
     :return:
     """
-    user = request.user
-    if user.info_status != FALLINLOVE:
-        return redirect("/")
     return render(request, 'fall_in_love.html')
 
 
+@logger(FALLINLOVE)
 @login_required
 def break_up_after_love(request):
     """
@@ -289,8 +275,6 @@ def break_up_after_love(request):
     :return:
     """
     user = request.user
-    if user.info_status != FALLINLOVE:
-        return redirect("/")
     if request.method == 'POST':
         Users.update_one_record_one_field(user.id, info_status=SUBMIT)
         if user.sex == MALE:
@@ -306,6 +290,7 @@ def break_up_after_love(request):
         return render(request, '404.html')
 
 
+@logger(BREAK_UP)
 @login_required
 def request_pay_back(request):
     """
@@ -314,8 +299,6 @@ def request_pay_back(request):
     :return:
     """
     user = request.user
-    if user.info_status != BREAK_UP:
-        return redirect("/")
     Users.update_one_record_one_field(user.id, info_status=REQUEST_PAY_BACK)
     return redirect("/")
 
