@@ -293,4 +293,4 @@ def index(request):
     elif info_status == FALLINLOVE:
         return redirect("/love_page")
     else:
-        return render(request, 'realname.html')
+        return render(request, 'real_name.html')
