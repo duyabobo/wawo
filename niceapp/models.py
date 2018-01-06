@@ -76,7 +76,7 @@ class Users(AbstractUser):
     # 个人必备信息
     mobile = models.IntegerField('手机号', default=0)
     sex = models.IntegerField('性别: 0女 1男', default=0)
-    info_status = models.IntegerField('账号状态: 0已注册，1完善，2已接触，3已恋爱，-1已过期，-2已投诉，-3已被投诉', default=0)
+    info_status = models.IntegerField('账号状态: 0已注册，1完善，2已接触，3已恋爱，-1已过期，-2已投诉，-3已被投诉，-4申请退还门槛费', default=0)
     real_name_status = models.IntegerField('恋爱状态：0未实名，1一级实名，2二级实名，3三级实名，4四级实名', default=0)
     # 条件数据：女的就是期望男友条件数据，男的就是自身的条件数据
     city = models.IntegerField('城市名:0北京,1上海...', default=0)
@@ -166,10 +166,57 @@ class UserRelation(BaseModel):
     """用户关系表"""
     boy_id = models.IntegerField('男孩id', default=0)
     girl_id = models.IntegerField('女孩id', default=0)
-    relation = models.IntegerField('0已通知/1已查阅/2已邀请/3已接触/4已恋爱/5已分手/6已投诉', default=0)
+    relation = models.IntegerField('0已通知/1男生已查阅/2已邀请/3女生已查阅/4已接触/5已恋爱/6已分手/7已投诉', default=0)
 
     class Meta:
         db_table = 'user_relation'
+
+    @classmethod
+    def get_one_user_relation_with_boy_id(cls, boy_id):
+        """
+        获取一条关系表
+        :param boy_id:
+        :return:
+        """
+        return UserRelation.objects.filter(boy_id=boy_id).order_by('-updated_at').first()
+
+    @classmethod
+    def get_one_user_relation_with_gril_id(cls, gril_id):
+        """
+        获取一条关系表
+        :param gril_id:
+        :return:
+        """
+        return UserRelation.objects.filter(gril_id=gril_id).order_by('-updated_at').first()
+
+    @classmethod
+    def get_one_user_relation(cls, boy_id, girl_id):
+        """
+        获取一条关系表
+        :param boy_id:
+        :param girl_id:
+        :return:
+        """
+        return UserRelation.objects.filter(boy_id=boy_id, girl_id=girl_id).order_by('-updated_at').first()
+
+    @classmethod
+    def insert_or_update_user_relation(cls, boy_id, girl_id, relation):
+        """
+        插入或更新一条用户记录
+        :param boy_id:
+        :param girl_id:
+        :param relation:
+        :return:
+        """
+        user_relation = UserRelation.get_one_user_relation(boy_id, girl_id)
+        if not user_relation:  # todo 需要检查是否用户信息过期了
+            user_relation = UserRelation(
+                boy_id=boy_id,
+                girl_id=girl_id
+            )
+        user_relation.relation = relation
+        user_relation.save()
+        return user_relation
 
 
 # 性别
@@ -184,9 +231,20 @@ FALLINLOVE = 4
 EXPIRED = -1
 COMPLAIN = -2
 COMPLAINED = -3
+REQUEST_PAY_BACK = -4
 # 恋爱状态
 NOTREALNAME = 0
 REALNAME_1 = 1
 REALNAME_2 = 2
 REALNAME_3 = 3
 REALNAME_4 = 4
+# 关系状态
+NOTIFIED = 0
+BOY_READ = 1
+BOY_INVITE = 2
+GRIL_READ = 3
+GRIL_ACCEPT = 4
+NOT_FIT = 5
+LAVE_STATUS = 6
+BREAK_UP = 7
+IN_COMPLAN = 8

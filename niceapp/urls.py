@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^connect_to_complain$', connect_to_complain, name='connect_to_complain'),
     url(r'^love_page$', love_page, name='love_page'),
     url(r'^break_up_after_love$', break_up_after_love, name='break_up_after_love'),
+    url(r'^request_pay_back$', request_pay_back, name='request_pay_back'),
 ]

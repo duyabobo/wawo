@@ -103,7 +103,8 @@ def suitable_girl_page(request):
     user = request.user
     if user.info_status != SUBMIT:
         return redirect("/")
-    suitable_girl_expection = get_suitable_girl_expection(user.id)  # todo 如果没有合适的女生？？
+    suitable_girl_expection = get_suitable_girl_expection(user.id)
+    UserRelation.insert_or_update_user_relation(user.id, suitable_girl_expection['id'], BOY_READ)
     return render(
         request, 'expection_content.html', {'suitable_girl_expection': suitable_girl_expection}
     )
@@ -120,7 +121,10 @@ def choice_suitable_girl(request):
     if user.info_status != SUBMIT:
         return redirect("/")
     if request.method == 'POST':
-        Users.update_one_record_one_field(user.id, info_status=INVITE)  # todo 还需要同步修改女生的状态为 INVITE
+        Users.update_one_record_one_field(user.id, info_status=INVITE)
+        choiced_girl_uid = UserRelation.get_one_user_relation_with_boy_id(user.id)
+        Users.update_one_record_one_field(choiced_girl_uid, info_status=INVITE)
+        UserRelation.insert_or_update_user_relation(user.id, choiced_girl_uid, BOY_INVITE)
         return render(request, 'invite_success.html')
     else:
         return render(request, '404.html')
@@ -149,7 +153,8 @@ def invite_boy_page(request):
     user = request.user
     if user.info_status != INVITE:
         return redirect("/")
-    invite_boy_condition = get_invite_boy_condition(user.id)  # todo 如果没有邀请的男生
+    invite_boy_condition = get_invite_boy_condition(user.id)
+    UserRelation.insert_or_update_user_relation(invite_boy_condition['id'], user.id, GRIL_READ)
     return render(
         request, 'inviter_content.html', {'invite_boy_condition': invite_boy_condition}
     )
@@ -166,7 +171,10 @@ def accept_invite_boy(request):
     if user.info_status != INVITE:
         return redirect("/")
     if request.method == 'POST':
-        Users.update_one_record_one_field(user.id, info_status=CONNECTED)  # todo 还需要同步修改男生的状态为 CONNECTED
+        Users.update_one_record_one_field(user.id, info_status=CONNECTED)
+        invite_boy_uid = UserRelation.get_one_user_relation_with_gril_id(user.id)
+        Users.update_one_record_one_field(invite_boy_uid, info_status=CONNECTED)
+        UserRelation.insert_or_update_user_relation(invite_boy_uid, user.id, GRIL_ACCEPT)
         return redirect("/connect_page")
     else:
         return render(request, '404.html')
@@ -196,7 +204,15 @@ def connect_to_fall_in_love(request):
     if user.info_status != CONNECTED:
         return redirect("/")
     if request.method == 'POST':
-        Users.update_one_record_one_field(user.id, info_status=FALLINLOVE)  # todo 男生女生需要同步变化状态
+        Users.update_one_record_one_field(user.id, info_status=FALLINLOVE)
+        if user.sex == MALE:
+            choiced_girl_uid = UserRelation.get_one_user_relation_with_boy_id(user.id)
+            UserRelation.insert_or_update_user_relation(user.id, choiced_girl_uid, LAVE_STATUS)
+            Users.update_one_record_one_field(choiced_girl_uid, info_status=FALLINLOVE)
+        else:
+            invite_boy_uid = UserRelation.get_one_user_relation_with_gril_id(user.id)
+            UserRelation.insert_or_update_user_relation(invite_boy_uid, user.id, LAVE_STATUS)
+            Users.update_one_record_one_field(invite_boy_uid, info_status=FALLINLOVE)
         return render(request, 'fall_in_love.html')
     else:
         return render(request, '404.html')
@@ -213,7 +229,15 @@ def connect_to_not_fit(request):
     if user.info_status != CONNECTED:
         return redirect("/")
     if request.method == 'POST':
-        Users.update_one_record_one_field(user.id, info_status=SUBMIT)  # todo 男生女生需要同步变化状态
+        Users.update_one_record_one_field(user.id, info_status=SUBMIT)
+        if user.sex == MALE:
+            choiced_girl_uid = UserRelation.get_one_user_relation_with_boy_id(user.id)
+            UserRelation.insert_or_update_user_relation(user.id, choiced_girl_uid, NOT_FIT)
+            Users.update_one_record_one_field(choiced_girl_uid, info_status=SUBMIT)
+        else:
+            invite_boy_uid = UserRelation.get_one_user_relation_with_gril_id(user.id)
+            UserRelation.insert_or_update_user_relation(invite_boy_uid, user.id, NOT_FIT)
+            Users.update_one_record_one_field(invite_boy_uid, info_status=SUBMIT)
         return redirect("/")
     else:
         return render(request, '404.html')
@@ -230,7 +254,15 @@ def connect_to_complain(request):
     if user.info_status != CONNECTED:
         return redirect("/")
     if request.method == 'POST':
-        Users.update_one_record_one_field(user.id, info_status=COMPLAIN)  # todo 男生女生需要同步变化状态
+        Users.update_one_record_one_field(user.id, info_status=COMPLAIN)
+        if user.sex == MALE:
+            choiced_girl_uid = UserRelation.get_one_user_relation_with_boy_id(user.id)
+            UserRelation.insert_or_update_user_relation(user.id, choiced_girl_uid, IN_COMPLAN)
+            Users.update_one_record_one_field(choiced_girl_uid, info_status=COMPLAINED)
+        else:
+            invite_boy_uid = UserRelation.get_one_user_relation_with_gril_id(user.id)
+            UserRelation.insert_or_update_user_relation(invite_boy_uid, user.id, IN_COMPLAN)
+            Users.update_one_record_one_field(invite_boy_uid, info_status=COMPLAINED)
         return redirect("/")
     else:
         return render(request, '404.html')
@@ -252,7 +284,7 @@ def love_page(request):
 @login_required
 def break_up_after_love(request):
     """
-    恋爱后分手，分手后没有抱怨入口，因为可以防止进入恋爱状态的盲目性
+    恋爱后分手，分手后没有抱怨入口，因为可以防止进入恋爱状态的盲目性，分手如果想要退还门槛费，男生需要实名制
     :param request:
     :return:
     """
@@ -260,10 +292,32 @@ def break_up_after_love(request):
     if user.info_status != FALLINLOVE:
         return redirect("/")
     if request.method == 'POST':
-        Users.update_one_record_one_field(user.id, info_status=SUBMIT)  # todo 男生女生需要同步变化状态
+        Users.update_one_record_one_field(user.id, info_status=SUBMIT)
+        if user.sex == MALE:
+            choiced_girl_uid = UserRelation.get_one_user_relation_with_boy_id(user.id)
+            UserRelation.insert_or_update_user_relation(user.id, choiced_girl_uid, BREAK_UP)
+            Users.update_one_record_one_field(choiced_girl_uid, info_status=SUBMIT)
+        else:
+            invite_boy_uid = UserRelation.get_one_user_relation_with_gril_id(user.id)
+            UserRelation.insert_or_update_user_relation(invite_boy_uid, user.id, BREAK_UP)
+            Users.update_one_record_one_field(invite_boy_uid, info_status=SUBMIT)
         return redirect("/")
     else:
         return render(request, '404.html')
+
+
+@login_required
+def request_pay_back(request):
+    """
+    申请退还门槛费页面，如果选了，就设置男生的状态为 REQUEST_PAY_BACK
+    :param request:
+    :return:
+    """
+    user = request.user
+    if user.info_status != BREAK_UP:
+        return redirect("/")
+    Users.update_one_record_one_field(user.id, info_status=REQUEST_PAY_BACK)
+    return redirect("/")
 
 
 @login_required
