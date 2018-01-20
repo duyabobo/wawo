@@ -9,6 +9,15 @@ SEX_CHOICE = (
 )
 
 
+PROVINCE_CHOICE = (
+    (0, '北京'),
+    (1, '上海'),
+    (2, '广东'),
+    (3, '江苏'),
+    (4, '浙江')
+)
+
+
 CITY_CHOICE = (
     (0, '北京'),
     (1, '上海'),
@@ -89,8 +98,12 @@ DISGUST_CHOICE = (
 
 class UserForm(forms.Form):
     """用户基本信息表单"""
-    city = forms.ChoiceField(label='城市', choices=CITY_CHOICE)
     sex = forms.ChoiceField(label='我的性别', choices=SEX_CHOICE)
+    home_province = forms.ChoiceField(label='家乡省份', choices=PROVINCE_CHOICE)
+    home_city = forms.ChoiceField(label='家乡城市', choices=CITY_CHOICE)
+    school_province = forms.ChoiceField(label='学校省份', choices=PROVINCE_CHOICE)
+    school_city = forms.ChoiceField(label='学校城市', choices=CITY_CHOICE)
+    birth_year = forms.IntegerField(label='出生年份')
     stature = forms.IntegerField(label='身高(cm)')
     weight = forms.IntegerField(label='体重(kg)')
     appearance = forms.ChoiceField(label='相貌', choices=APPEARANCE_CHOICE)
