@@ -76,10 +76,14 @@ class Users(AbstractUser):
     # 个人必备信息
     mobile = models.IntegerField('手机号', default=0)
     sex = models.IntegerField('性别: 0女 1男', default=0)
+    age = models.IntegerField('年龄', default=0)
     info_status = models.IntegerField('账号状态: 0已注册，1完善，2已接触，3已恋爱，-1已过期，-2已投诉，-3已被投诉，-4申请退还门槛费', default=0)
     real_name_status = models.IntegerField('恋爱状态：0未实名，1一级实名，2二级实名，3三级实名，4四级实名', default=0)
     # 条件数据：女的就是期望男友条件数据，男的就是自身的条件数据
-    city = models.IntegerField('城市名:0北京,1上海...', default=0)
+    home_province = models.IntegerField('家乡省份:0北京,1上海...', default=0)
+    home_city = models.IntegerField('家乡城市名:0北京,1上海...', default=0)
+    school_province = models.IntegerField('学校省份:0北京,1上海...', default=0)
+    school_city = models.IntegerField('学校城市名:0北京,1上海...', default=0)
     stature = models.IntegerField('身高(cm)', default=0)
     weight = models.IntegerField('体重(kg)', default=0)
     appearance = models.IntegerField('相貌: 0不要求，1干净整洁，2阳光自信，3英俊帅气，12，13，23为组合...', default=0)
@@ -95,7 +99,6 @@ class Users(AbstractUser):
     school = models.CharField('学校名', max_length=100, default='')
     student_identity_card_qiniu_uri = models.CharField('学生证照片七牛云存储对应的uri', max_length=500, default='')
     name = models.CharField('姓名', max_length=20, default='')
-    age = models.IntegerField('年龄', default=0)
     college = models.CharField('院系名', max_length=100, default='')
     profession = models.CharField('专业名', max_length=100, default='')
     school_num = models.CharField('学号', max_length=100, default='')
