@@ -99,6 +99,7 @@ DISGUST_CHOICE = (
 class UserForm(forms.Form):
     """用户基本信息表单"""
     sex = forms.ChoiceField(label='我的性别', choices=SEX_CHOICE)
+    qq = forms.CharField(label='qq')
     home_province = forms.ChoiceField(label='家乡省份', choices=PROVINCE_CHOICE)
     home_city = forms.ChoiceField(label='家乡城市', choices=CITY_CHOICE)
     school_province = forms.ChoiceField(label='学校省份', choices=PROVINCE_CHOICE)

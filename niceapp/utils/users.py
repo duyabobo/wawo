@@ -26,7 +26,11 @@ def get_invite_boy_condition(user_id):
     user = Users.get_one(user_id)
     return {
         'id': user.id,
-        'city': user.city,
+        'home_province': user.home_province,
+        'home_city': user.home_city,
+        'school_province': user.school_province,
+        'school_city': user.school_city,
+        'birth_year': user.birth_year,
         'sex': user.sex,
         'stature': user.stature,
         'weight': user.weight,
@@ -48,7 +52,11 @@ def get_suitable_girl_expection(user_id):
     user = Users.get_one(user_id)
     return {
         'id': user.id,
-        'city': user.city,
+        'home_province': user.home_province,
+        'home_city': user.home_city,
+        'school_province': user.school_province,
+        'school_city': user.school_city,
+        'birth_year': user.birth_year,
         'sex': user.sex,
         'stature': user.stature,
         'weight': user.weight,

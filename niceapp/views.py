@@ -118,9 +118,12 @@ def choice_suitable_girl(request):
     user = request.user
     if request.method == 'POST':
         Users.update_one_record_one_field(user.id, info_status=INVITE)
-        choiced_girl_uid = UserRelation.get_one_user_relation_with_boy_id(user.id)
-        Users.update_one_record_one_field(choiced_girl_uid, info_status=INVITE)
-        UserRelation.insert_or_update_user_relation(user.id, choiced_girl_uid, BOY_INVITE)
+        user_relation = UserRelation.get_one_user_relation_with_boy_id(user.id)
+        if user_relation:
+            girl_id = user_relation.girl_id
+            Users.update_one_record_one_field(girl_id, info_status=INVITE)
+            UserRelation.insert_or_update_user_relation(user.id, girl_id, BOY_INVITE)
+        # 如果不存在 user_relation 怎么做
         return render(request, 'invite_success.html')
     else:
         return render(request, '404.html')
@@ -164,9 +167,12 @@ def accept_invite_boy(request):
     user = request.user
     if request.method == 'POST':
         Users.update_one_record_one_field(user.id, info_status=CONNECTED)
-        invite_boy_uid = UserRelation.get_one_user_relation_with_gril_id(user.id)
-        Users.update_one_record_one_field(invite_boy_uid, info_status=CONNECTED)
-        UserRelation.insert_or_update_user_relation(invite_boy_uid, user.id, GRIL_ACCEPT)
+        user_relation = UserRelation.get_one_user_relation_with_gril_id(user.id)
+        if user_relation:
+            boy_id = user_relation.boy_id
+            Users.update_one_record_one_field(boy_id, info_status=CONNECTED)
+            UserRelation.insert_or_update_user_relation(boy_id, user.id, GRIL_ACCEPT)
+        # todo 發送女生qq给男生, 如果不存在 user_relation 怎么做
         return redirect("/connect_page")
     else:
         return render(request, '404.html')
@@ -195,13 +201,17 @@ def connect_to_fall_in_love(request):
     if request.method == 'POST':
         Users.update_one_record_one_field(user.id, info_status=FALLINLOVE)
         if user.sex == MALE:
-            choiced_girl_uid = UserRelation.get_one_user_relation_with_boy_id(user.id)
-            UserRelation.insert_or_update_user_relation(user.id, choiced_girl_uid, LAVE_STATUS)
-            Users.update_one_record_one_field(choiced_girl_uid, info_status=FALLINLOVE)
+            user_relation = UserRelation.get_one_user_relation_with_boy_id(user.id)
+            if user_relation:
+                girl_id = user_relation.girl_id
+                UserRelation.insert_or_update_user_relation(user.id, girl_id, LAVE_STATUS)
+                Users.update_one_record_one_field(girl_id, info_status=FALLINLOVE)
         else:
-            invite_boy_uid = UserRelation.get_one_user_relation_with_gril_id(user.id)
-            UserRelation.insert_or_update_user_relation(invite_boy_uid, user.id, LAVE_STATUS)
-            Users.update_one_record_one_field(invite_boy_uid, info_status=FALLINLOVE)
+            user_relation = UserRelation.get_one_user_relation_with_gril_id(user.id)
+            if user_relation:
+                boy_id = user_relation.boy_id
+                UserRelation.insert_or_update_user_relation(boy_id, user.id, LAVE_STATUS)
+                Users.update_one_record_one_field(boy_id, info_status=FALLINLOVE)
         return render(request, 'fall_in_love.html')
     else:
         return render(request, '404.html')
@@ -219,13 +229,17 @@ def connect_to_not_fit(request):
     if request.method == 'POST':
         Users.update_one_record_one_field(user.id, info_status=SUBMIT)
         if user.sex == MALE:
-            choiced_girl_uid = UserRelation.get_one_user_relation_with_boy_id(user.id)
-            UserRelation.insert_or_update_user_relation(user.id, choiced_girl_uid, NOT_FIT)
-            Users.update_one_record_one_field(choiced_girl_uid, info_status=SUBMIT)
+            user_relation = UserRelation.get_one_user_relation_with_boy_id(user.id)
+            if user_relation:
+                girl_id = user_relation.girl_id
+                UserRelation.insert_or_update_user_relation(user.id, girl_id, NOT_FIT)
+                Users.update_one_record_one_field(girl_id, info_status=SUBMIT)
         else:
-            invite_boy_uid = UserRelation.get_one_user_relation_with_gril_id(user.id)
-            UserRelation.insert_or_update_user_relation(invite_boy_uid, user.id, NOT_FIT)
-            Users.update_one_record_one_field(invite_boy_uid, info_status=SUBMIT)
+            user_relation = UserRelation.get_one_user_relation_with_gril_id(user.id)
+            if user_relation:
+                boy_id = user_relation.boy_id
+                UserRelation.insert_or_update_user_relation(boy_id, user.id, NOT_FIT)
+                Users.update_one_record_one_field(boy_id, info_status=SUBMIT)
         return redirect("/")
     else:
         return render(request, '404.html')
@@ -243,13 +257,17 @@ def connect_to_complain(request):
     if request.method == 'POST':
         Users.update_one_record_one_field(user.id, info_status=COMPLAIN)
         if user.sex == MALE:
-            choiced_girl_uid = UserRelation.get_one_user_relation_with_boy_id(user.id)
-            UserRelation.insert_or_update_user_relation(user.id, choiced_girl_uid, IN_COMPLAN)
-            Users.update_one_record_one_field(choiced_girl_uid, info_status=COMPLAINED)
+            user_relation = UserRelation.get_one_user_relation_with_boy_id(user.id)
+            if user_relation:
+                girl_id = user_relation.girl_id
+                UserRelation.insert_or_update_user_relation(user.id, girl_id, IN_COMPLAN)
+                Users.update_one_record_one_field(girl_id, info_status=COMPLAINED)
         else:
-            invite_boy_uid = UserRelation.get_one_user_relation_with_gril_id(user.id)
-            UserRelation.insert_or_update_user_relation(invite_boy_uid, user.id, IN_COMPLAN)
-            Users.update_one_record_one_field(invite_boy_uid, info_status=COMPLAINED)
+            user_relation = UserRelation.get_one_user_relation_with_gril_id(user.id)
+            if user_relation:
+                boy_id = user_relation.boy_id
+                UserRelation.insert_or_update_user_relation(boy_id, user.id, IN_COMPLAN)
+                Users.update_one_record_one_field(boy_id, info_status=COMPLAINED)
         return redirect("/")
     else:
         return render(request, '404.html')
@@ -278,13 +296,17 @@ def break_up_after_love(request):
     if request.method == 'POST':
         Users.update_one_record_one_field(user.id, info_status=SUBMIT)
         if user.sex == MALE:
-            choiced_girl_uid = UserRelation.get_one_user_relation_with_boy_id(user.id)
-            UserRelation.insert_or_update_user_relation(user.id, choiced_girl_uid, BREAK_UP)
-            Users.update_one_record_one_field(choiced_girl_uid, info_status=SUBMIT)
+            user_relation = UserRelation.get_one_user_relation_with_boy_id(user.id)
+            if user_relation:
+                girl_id = user_relation.girl_id
+                UserRelation.insert_or_update_user_relation(user.id, girl_id, BREAK_UP)
+                Users.update_one_record_one_field(girl_id, info_status=SUBMIT)
         else:
-            invite_boy_uid = UserRelation.get_one_user_relation_with_gril_id(user.id)
-            UserRelation.insert_or_update_user_relation(invite_boy_uid, user.id, BREAK_UP)
-            Users.update_one_record_one_field(invite_boy_uid, info_status=SUBMIT)
+            user_relation = UserRelation.get_one_user_relation_with_gril_id(user.id)
+            if user_relation:
+                boy_id = user_relation.boy_id
+                UserRelation.insert_or_update_user_relation(boy_id, user.id, BREAK_UP)
+                Users.update_one_record_one_field(boy_id, info_status=SUBMIT)
         return redirect("/")
     else:
         return render(request, '404.html')

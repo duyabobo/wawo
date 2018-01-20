@@ -2,10 +2,14 @@
 
 {% block title %}有人邀请您哟，下面是他的信息{% endblock %}
 {% block form %}
-<form method = 'post' enctype="multipart/form-data">
+<form method = 'post' enctype="multipart/form-data" action="/accept_invite_boy">
     {% csrf_token %}
     {% if invite_boy_condition %}
-        城市：{{ invite_boy_condition.city }}<br>
+        家乡省份：{{ invite_boy_condition.home_province }}<br>
+        家乡城市：{{ invite_boy_condition.home_city }}<br>
+        学校省份：{{ invite_boy_condition.school_province }}<br>
+        学校城市：{{ invite_boy_condition.school_city }}<br>
+        出生年份：{{ invite_boy_condition.birth_year }}<br>
         性别：{{ invite_boy_condition.sex }}<br>
         身高：{{ invite_boy_condition.stature }}<br>
         体重：{{ invite_boy_condition.weight }}<br>

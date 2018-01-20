@@ -76,10 +76,11 @@ class Users(AbstractUser):
     # 个人必备信息
     mobile = models.IntegerField('手机号', default=0)
     sex = models.IntegerField('性别: 0女 1男', default=0)
-    birth_year = models.IntegerField('出生年份', default=0)
     info_status = models.IntegerField('账号状态: 0已注册，1完善，2已接触，3已恋爱，-1已过期，-2已投诉，-3已被投诉，-4申请退还门槛费', default=0)
     real_name_status = models.IntegerField('恋爱状态：0未实名，1一级实名，2二级实名，3三级实名，4四级实名', default=0)
     # 条件数据：女的就是期望男友条件数据，男的就是自身的条件数据
+    birth_year = models.IntegerField('出生年份', default=0)
+    qq = models.CharField('qq', max_length=20, default='')
     home_province = models.IntegerField('家乡省份:0北京,1上海...', default=0)
     home_city = models.IntegerField('家乡城市名:0北京,1上海...', default=0)
     school_province = models.IntegerField('学校省份:0北京,1上海...', default=0)

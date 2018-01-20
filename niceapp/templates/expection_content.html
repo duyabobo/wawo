@@ -3,7 +3,7 @@
 {% block title %}她的期望如下，您很合适哦{% endblock %}
 
 {% block form %}
-<form method = 'post' enctype="multipart/form-data">
+<form method = 'post' enctype="multipart/form-data" action="/choice_suitable_girl">
     {% csrf_token %}
     {% if suitable_girl_expection %}
         城市：{{ suitable_girl_expection.city }}<br>
