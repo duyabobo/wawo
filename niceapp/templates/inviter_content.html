@@ -2,6 +2,8 @@
 
 {% block title %}有人邀请您哟，下面是他的信息{% endblock %}
 {% block form %}
+<form method = 'post' enctype="multipart/form-data">
+    {% csrf_token %}
     {% if invite_boy_condition %}
         城市：{{ invite_boy_condition.city }}<br>
         性别：{{ invite_boy_condition.sex }}<br>
@@ -20,4 +22,5 @@
     {% else %}
         您还没有收到邀请，如有我们会第一时间短信通知您。<br>
     {% endif %}
+</form>
 {% endblock %}

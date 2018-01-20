@@ -4,6 +4,8 @@
     我是女生，我期望男友的条件如下   /   我是男生，我的自身条件如下
 {% endblock %}
 {% block form %}
+<form method = 'post' enctype="multipart/form-data">
+    {% csrf_token %}
     {{user_form.as_p}}
     <text>wawo不会索求女生的私人信息，除非女生被投诉</text>
     <br>
@@ -12,4 +14,5 @@
     <text>wawo不会索要男生的私人信息，只要男生提供的外在信息是真实的</text>
     <br>
     <input type="submit" value = "提交" />
+</form>
 {% endblock %}

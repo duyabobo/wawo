@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 
 {% block title %}她的期望如下，您很合适哦{% endblock %}
+
 {% block form %}
+<form method = 'post' enctype="multipart/form-data">
+    {% csrf_token %}
     {% if suitable_girl_expection %}
         城市：{{ suitable_girl_expection.city }}<br>
         性别：{{ suitable_girl_expection.sex }}<br>
@@ -20,4 +23,5 @@
     {% else %}
         还没有发现合适的女生，如有我们会第一时间短信通知您。<br>
     {% endif %}
+</form>
 {% endblock %}

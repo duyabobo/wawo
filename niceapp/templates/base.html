@@ -8,9 +8,6 @@
 
 <body>
 {% block title %}{% endblock %}
-<form method = 'post' enctype="multipart/form-data">
-    {% csrf_token %}
-    {% block form %}{% endblock %}
-</form>
+{% block form %}{% endblock %}
 </body>
 </html>

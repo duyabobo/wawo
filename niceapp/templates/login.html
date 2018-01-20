@@ -2,6 +2,9 @@
 
 {% block title %}登陆{% endblock %}
 {% block form %}
+<form method = 'post' enctype="multipart/form-data">
+    {% csrf_token %}
     {{auth_form.as_p}}
     <input type="submit" value = "登陆" />
+</form>
 {% endblock %}
