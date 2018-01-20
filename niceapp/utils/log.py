@@ -22,8 +22,8 @@ def logger(info_status=None):
                     result = view_method(*args, **kwargs)
                 end_time = time.time()
                 log.info(
-                    'Method: {0}, Url: {1}, Body: {2}, COOKIES: {3}, Delay: {4}'.format
-                    (request.method, request.path, request.body, request.COOKIES, end_time - start_time)
+                    'Method: {0}, Url: {1}, GET: {2}, POST: {3}, COOKIES: {4}, Delay: {5}'.format
+                    (request.method, request.path, request.GET, request.POST, request.COOKIES, end_time - start_time)
                 )
             except Exception as e:
                 log.exception(str(e))
