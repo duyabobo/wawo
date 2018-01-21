@@ -13,7 +13,7 @@ from utils.users import get_invite_boy_condition, get_suitable_girl_expection, a
 from utils.log import logger
 
 
-@logger(None)
+@logger(None, None)
 def access_login(request):
     """
     登陆view
@@ -33,7 +33,7 @@ def access_login(request):
         return render(request, 'login.html', {'auth_form': auth_form})
 
 
-@logger(None)
+@logger(None, None)
 def access_logout(request):
     """
     登出view
@@ -44,7 +44,7 @@ def access_logout(request):
     return redirect("/login")
 
 
-@logger(REGISTERED)
+@logger(REGISTERED, None)
 @login_required
 def content_page(request):
     """
@@ -56,7 +56,7 @@ def content_page(request):
     return render(request, 'submit_content.html', {'user_form': user_form})
 
 
-@logger(REGISTERED)
+@logger(REGISTERED, None)
 @login_required
 def submit_content(request):
     """
@@ -70,17 +70,14 @@ def submit_content(request):
         if user_form.is_valid():
             Users.update_one_record(user.id, **user_form.cleaned_data)
             Users.update_one_record_one_field(user.id, info_status=SUBMIT)
-            if user.sex == MALE:
-                return redirect("/suitable_girl_page")
-            else:
-                return redirect("/invite_boy_page")
+            return redirect('/')
         else:
             return HttpResponse(json.dumps(user_form.errors))
     else:
         return render(request, '404.html')
 
 
-@logger(SUBMIT)
+@logger(SUBMIT, FEMALE)
 @login_required
 def girl_after_submit(request):
     """
@@ -91,7 +88,7 @@ def girl_after_submit(request):
     return render(request, 'girl_after_submit.html')
 
 
-@logger(SUBMIT)
+@logger(SUBMIT, MALE)
 @login_required
 def suitable_girl_page(request):
     """
@@ -107,7 +104,7 @@ def suitable_girl_page(request):
     )
 
 
-@logger(SUBMIT)
+@logger(SUBMIT, None)
 @login_required
 def choice_suitable_girl(request):
     """
@@ -129,7 +126,7 @@ def choice_suitable_girl(request):
         return render(request, '404.html')
 
 
-@logger(INVITE)
+@logger(INVITE, MALE)
 @login_required
 def boy_after_invite(request):
     """
@@ -140,7 +137,7 @@ def boy_after_invite(request):
     return render(request, 'boy_after_invite.html')
 
 
-@logger(INVITE)
+@logger(INVITE, FEMALE)
 @login_required
 def invite_boy_page(request):
     """
@@ -156,7 +153,7 @@ def invite_boy_page(request):
     )
 
 
-@logger(INVITE)
+@logger(INVITE, None)
 @login_required
 def accept_invite_boy(request):
     """
@@ -178,7 +175,7 @@ def accept_invite_boy(request):
         return render(request, '404.html')
 
 
-@logger(CONNECTED)
+@logger(CONNECTED, None)
 @login_required
 def connect_page(request):
     """
@@ -189,7 +186,7 @@ def connect_page(request):
     return render(request, 'connect_success.html')
 
 
-@logger(CONNECTED)
+@logger(CONNECTED, None)
 @login_required
 def connect_to_fall_in_love(request):
     """
@@ -217,7 +214,7 @@ def connect_to_fall_in_love(request):
         return render(request, '404.html')
 
 
-@logger(CONNECTED)
+@logger(CONNECTED, None)
 @login_required
 def connect_to_not_fit(request):
     """
@@ -245,7 +242,7 @@ def connect_to_not_fit(request):
         return render(request, '404.html')
 
 
-@logger(CONNECTED)
+@logger(CONNECTED, None)
 @login_required
 def connect_to_complain(request):
     """
@@ -273,7 +270,7 @@ def connect_to_complain(request):
         return render(request, '404.html')
 
 
-@logger(FALLINLOVE)
+@logger(FALLINLOVE, None)
 @login_required
 def love_page(request):
     """
@@ -284,7 +281,7 @@ def love_page(request):
     return render(request, 'fall_in_love.html')
 
 
-@logger(FALLINLOVE)
+@logger(FALLINLOVE, None)
 @login_required
 def break_up_after_love(request):
     """
@@ -312,7 +309,7 @@ def break_up_after_love(request):
         return render(request, '404.html')
 
 
-@logger(BREAK_UP)
+@logger(BREAK_UP, None)
 @login_required
 def request_pay_back(request):
     """
@@ -325,6 +322,7 @@ def request_pay_back(request):
     return redirect("/")
 
 
+@logger(None, None)
 @login_required
 def index(request):
     """
