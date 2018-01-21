@@ -99,7 +99,7 @@ def suitable_girl_page(request):
     """
     user = request.user
     suitable_girl_expection = get_suitable_girl_expection(user.id)
-    UserRelation.insert_or_update_user_relation(user.id, suitable_girl_expection['id'], BOY_READ)
+    UserRelation.insert_one_user_relation(user.id, suitable_girl_expection['id'], BOY_READ)
     return render(
         request, 'expection_content.html', {'suitable_girl_expection': suitable_girl_expection}
     )
@@ -120,7 +120,7 @@ def choice_suitable_girl(request):
         if user_relation:
             girl_id = user_relation.girl_id
             Users.update_one_record_one_field(girl_id, info_status=INVITE)
-            UserRelation.insert_or_update_user_relation(user.id, girl_id, BOY_INVITE)
+            UserRelation.insert_one_user_relation(user.id, girl_id, BOY_INVITE)
         # 如果不存在 user_relation 怎么做
         return render(request, 'invite_success.html')
     else:
@@ -148,7 +148,7 @@ def invite_boy_page(request):
     """
     user = request.user
     invite_boy_condition = get_invite_boy_condition(user.id)
-    UserRelation.insert_or_update_user_relation(invite_boy_condition['id'], user.id, GRIL_READ)
+    UserRelation.insert_one_user_relation(invite_boy_condition['id'], user.id, GRIL_READ)
     return render(
         request, 'inviter_content.html', {'invite_boy_condition': invite_boy_condition}
     )
@@ -169,7 +169,7 @@ def accept_invite_boy(request):
         if user_relation:
             boy_id = user_relation.boy_id
             Users.update_one_record_one_field(boy_id, info_status=CONNECTED)
-            UserRelation.insert_or_update_user_relation(boy_id, user.id, GRIL_ACCEPT)
+            UserRelation.insert_one_user_relation(boy_id, user.id, GRIL_ACCEPT)
         # todo 發送女生qq给男生, 如果不存在 user_relation 怎么做
         return redirect("/connect_page")
     else:
@@ -202,13 +202,13 @@ def connect_to_fall_in_love(request):
             user_relation = UserRelation.get_one_user_relation_with_boy_id(user.id)
             if user_relation:
                 girl_id = user_relation.girl_id
-                UserRelation.insert_or_update_user_relation(user.id, girl_id, LAVE_STATUS)
+                UserRelation.insert_one_user_relation(user.id, girl_id, LAVE_STATUS)
                 Users.update_one_record_one_field(girl_id, info_status=FALLINLOVE)
         else:
             user_relation = UserRelation.get_one_user_relation_with_girl_id(user.id)
             if user_relation:
                 boy_id = user_relation.boy_id
-                UserRelation.insert_or_update_user_relation(boy_id, user.id, LAVE_STATUS)
+                UserRelation.insert_one_user_relation(boy_id, user.id, LAVE_STATUS)
                 Users.update_one_record_one_field(boy_id, info_status=FALLINLOVE)
         return render(request, 'fall_in_love.html')
     else:
@@ -230,13 +230,13 @@ def connect_to_not_fit(request):
             user_relation = UserRelation.get_one_user_relation_with_boy_id(user.id)
             if user_relation:
                 girl_id = user_relation.girl_id
-                UserRelation.insert_or_update_user_relation(user.id, girl_id, NOT_FIT)
+                UserRelation.insert_one_user_relation(user.id, girl_id, NOT_FIT)
                 Users.update_one_record_one_field(girl_id, info_status=SUBMIT)
         else:
             user_relation = UserRelation.get_one_user_relation_with_girl_id(user.id)
             if user_relation:
                 boy_id = user_relation.boy_id
-                UserRelation.insert_or_update_user_relation(boy_id, user.id, NOT_FIT)
+                UserRelation.insert_one_user_relation(boy_id, user.id, NOT_FIT)
                 Users.update_one_record_one_field(boy_id, info_status=SUBMIT)
         return redirect("/")
     else:
@@ -258,13 +258,13 @@ def connect_to_complain(request):
             user_relation = UserRelation.get_one_user_relation_with_boy_id(user.id)
             if user_relation:
                 girl_id = user_relation.girl_id
-                UserRelation.insert_or_update_user_relation(user.id, girl_id, IN_COMPLAN)
+                UserRelation.insert_one_user_relation(user.id, girl_id, IN_COMPLAN)
                 Users.update_one_record_one_field(girl_id, info_status=COMPLAINED)
         else:
             user_relation = UserRelation.get_one_user_relation_with_girl_id(user.id)
             if user_relation:
                 boy_id = user_relation.boy_id
-                UserRelation.insert_or_update_user_relation(boy_id, user.id, IN_COMPLAN)
+                UserRelation.insert_one_user_relation(boy_id, user.id, IN_COMPLAN)
                 Users.update_one_record_one_field(boy_id, info_status=COMPLAINED)
         return redirect("/")
     else:
@@ -297,13 +297,13 @@ def break_up_after_love(request):
             user_relation = UserRelation.get_one_user_relation_with_boy_id(user.id)
             if user_relation:
                 girl_id = user_relation.girl_id
-                UserRelation.insert_or_update_user_relation(user.id, girl_id, BREAK_UP)
+                UserRelation.insert_one_user_relation(user.id, girl_id, BREAK_UP)
                 Users.update_one_record_one_field(girl_id, info_status=SUBMIT)
         else:
             user_relation = UserRelation.get_one_user_relation_with_girl_id(user.id)
             if user_relation:
                 boy_id = user_relation.boy_id
-                UserRelation.insert_or_update_user_relation(boy_id, user.id, BREAK_UP)
+                UserRelation.insert_one_user_relation(boy_id, user.id, BREAK_UP)
                 Users.update_one_record_one_field(boy_id, info_status=SUBMIT)
         return redirect("/")
     else:

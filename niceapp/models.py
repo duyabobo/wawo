@@ -188,7 +188,7 @@ class UserRelation(BaseModel):
     """用户关系表"""
     boy_id = models.IntegerField('男孩id', default=0)
     girl_id = models.IntegerField('女孩id', default=0)
-    relation = models.IntegerField('0已通知/1男生已查阅/2已邀请/3女生已查阅/4已接触/5已恋爱/6已分手/7已投诉', default=0)
+    relation = models.IntegerField('0已通知/1男生已查阅/2已邀请/3女生已查阅/4已接触/5已恋爱/6已分手/7已投诉/8已自动拒绝/9已自动恋爱', default=0)
 
     class Meta:
         db_table = 'user_relation'
@@ -222,21 +222,20 @@ class UserRelation(BaseModel):
         return UserRelation.objects.filter(boy_id=boy_id, girl_id=girl_id).order_by('-updated_at').first()
 
     @classmethod
-    def insert_or_update_user_relation(cls, boy_id, girl_id, relation):
+    def insert_one_user_relation(cls, boy_id, girl_id, relation):
         """
-        插入或更新一条用户记录
+        插入一条用户关系记录
         :param boy_id:
         :param girl_id:
         :param relation:
         :return:
         """
-        user_relation = UserRelation.get_one_user_relation(boy_id, girl_id)
-        if not user_relation:  # todo 需要检查是否用户信息过期了
-            user_relation = UserRelation(
-                boy_id=boy_id,
-                girl_id=girl_id
-            )
-        user_relation.relation = relation
+        # todo 除了用户主动修改用户关系，需要另起异步脚本维护用户关系记录，包括自动拒绝脚本，以及自动恋爱脚本，以及自动信息过期脚本，其中用户信息过期，相当于手机号重新注册
+        user_relation = UserRelation(
+            boy_id=boy_id,
+            girl_id=girl_id,
+            relation=relation
+        )
         user_relation.save()
         return user_relation
 
