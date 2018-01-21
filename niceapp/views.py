@@ -167,7 +167,7 @@ def accept_invite_boy(request):
     user = request.user
     if request.method == 'POST':
         Users.update_one_record_one_field(user.id, info_status=CONNECTED)
-        user_relation = UserRelation.get_one_user_relation_with_gril_id(user.id)
+        user_relation = UserRelation.get_one_user_relation_with_girl_id(user.id)
         if user_relation:
             boy_id = user_relation.boy_id
             Users.update_one_record_one_field(boy_id, info_status=CONNECTED)
@@ -207,7 +207,7 @@ def connect_to_fall_in_love(request):
                 UserRelation.insert_or_update_user_relation(user.id, girl_id, LAVE_STATUS)
                 Users.update_one_record_one_field(girl_id, info_status=FALLINLOVE)
         else:
-            user_relation = UserRelation.get_one_user_relation_with_gril_id(user.id)
+            user_relation = UserRelation.get_one_user_relation_with_girl_id(user.id)
             if user_relation:
                 boy_id = user_relation.boy_id
                 UserRelation.insert_or_update_user_relation(boy_id, user.id, LAVE_STATUS)
@@ -235,7 +235,7 @@ def connect_to_not_fit(request):
                 UserRelation.insert_or_update_user_relation(user.id, girl_id, NOT_FIT)
                 Users.update_one_record_one_field(girl_id, info_status=SUBMIT)
         else:
-            user_relation = UserRelation.get_one_user_relation_with_gril_id(user.id)
+            user_relation = UserRelation.get_one_user_relation_with_girl_id(user.id)
             if user_relation:
                 boy_id = user_relation.boy_id
                 UserRelation.insert_or_update_user_relation(boy_id, user.id, NOT_FIT)
@@ -263,7 +263,7 @@ def connect_to_complain(request):
                 UserRelation.insert_or_update_user_relation(user.id, girl_id, IN_COMPLAN)
                 Users.update_one_record_one_field(girl_id, info_status=COMPLAINED)
         else:
-            user_relation = UserRelation.get_one_user_relation_with_gril_id(user.id)
+            user_relation = UserRelation.get_one_user_relation_with_girl_id(user.id)
             if user_relation:
                 boy_id = user_relation.boy_id
                 UserRelation.insert_or_update_user_relation(boy_id, user.id, IN_COMPLAN)
@@ -302,7 +302,7 @@ def break_up_after_love(request):
                 UserRelation.insert_or_update_user_relation(user.id, girl_id, BREAK_UP)
                 Users.update_one_record_one_field(girl_id, info_status=SUBMIT)
         else:
-            user_relation = UserRelation.get_one_user_relation_with_gril_id(user.id)
+            user_relation = UserRelation.get_one_user_relation_with_girl_id(user.id)
             if user_relation:
                 boy_id = user_relation.boy_id
                 UserRelation.insert_or_update_user_relation(boy_id, user.id, BREAK_UP)

@@ -185,13 +185,13 @@ class UserRelation(BaseModel):
         return UserRelation.objects.filter(boy_id=boy_id).order_by('-updated_at').first()
 
     @classmethod
-    def get_one_user_relation_with_gril_id(cls, gril_id):
+    def get_one_user_relation_with_girl_id(cls, girl_id):
         """
         获取一条关系表
-        :param gril_id:
+        :param girl_id:
         :return:
         """
-        return UserRelation.objects.filter(gril_id=gril_id).order_by('-updated_at').first()
+        return UserRelation.objects.filter(girl_id=girl_id).order_by('-updated_at').first()
 
     @classmethod
     def get_one_user_relation(cls, boy_id, girl_id):

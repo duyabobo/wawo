@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^choice_suitable_girl$', choice_suitable_girl, name='choice_suitable_girl'),
     url(r'^boy_after_invite$', boy_after_invite, name='boy_after_invite'),
     url(r'^invite_boy_page$', invite_boy_page, name='invite_boy_page'),
+    url(r'^accept_invite_boy$', accept_invite_boy, name='accept_invite_boy'),
     url(r'^connect_page$', connect_page, name='connect_page'),
     url(r'^connect_to_fall_in_love$', connect_to_fall_in_love, name='connect_to_fall_in_love'),
     url(r'^connect_to_not_fit$', connect_to_not_fit, name='connect_to_not_fit'),

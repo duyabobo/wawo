@@ -9,7 +9,7 @@ CREATE TABLE `users` (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
   `mobile` BIGINT UNSIGNED NOT NULL DEFAULT 0,
   `sex` TINYINT UNSIGNED NOT NULL DEFAULT 0,
-  `info_status` TINYINT NOT NULL DEFAULT 0 COMMENT '账号状态: 0已注册，1完善，2已接触，3已恋爱，-1已过期，-2已投诉，-3已被投诉，-4申请退还门槛费',
+  `info_status` TINYINT NOT NULL DEFAULT 0 COMMENT '账号状态: 0已注册，1信息完善，2发出邀请（男）/已接收邀请（女），3已接触，4已恋爱，-1已过期，-2已投诉，-3已被投诉，-4申请退还门槛费',
   `real_name_status` TINYINT NOT NULL DEFAULT 0 COMMENT '恋爱状态：0未实名，1一级实名，2二级实名，3三级实名，4四级实名',
   `birth_year` SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '出生年份',
   `qq` BIGINT UNSIGNED NOT NULL DEFAULT 0,
