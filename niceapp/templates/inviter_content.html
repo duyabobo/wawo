@@ -5,12 +5,12 @@
 <form method = 'post' enctype="multipart/form-data" action="/accept_invite_boy">
     {% csrf_token %}
     {% if invite_boy_condition %}
+        性别：{{ invite_boy_condition.sex }}<br>
         家乡省份：{{ invite_boy_condition.home_province }}<br>
         家乡城市：{{ invite_boy_condition.home_city }}<br>
         学校省份：{{ invite_boy_condition.school_province }}<br>
         学校城市：{{ invite_boy_condition.school_city }}<br>
         出生年份：{{ invite_boy_condition.birth_year }}<br>
-        性别：{{ invite_boy_condition.sex }}<br>
         身高：{{ invite_boy_condition.stature }}<br>
         体重：{{ invite_boy_condition.weight }}<br>
         相貌：{{ invite_boy_condition.appearance }}<br>
@@ -21,7 +21,7 @@
         每月生活费：{{ invite_boy_condition.wealth }}<br>
         <input type="submit" value = "接受邀请" />
         <br>
-        接受邀请后，您的联系方式将会发送给男生。<br>
+        接受邀请后，您的qq号将会通过短信发送给男生。<br>
         同时，您将不能接收其他邀请。
     {% else %}
         您还没有收到邀请，如有我们会第一时间短信通知您。<br>

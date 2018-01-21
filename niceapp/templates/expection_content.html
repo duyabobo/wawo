@@ -6,8 +6,12 @@
 <form method = 'post' enctype="multipart/form-data" action="/choice_suitable_girl">
     {% csrf_token %}
     {% if suitable_girl_expection %}
-        城市：{{ suitable_girl_expection.city }}<br>
         性别：{{ suitable_girl_expection.sex }}<br>
+        家乡省份：{{ suitable_girl_expection.home_province }}<br>
+        家乡城市：{{ suitable_girl_expection.home_city }}<br>
+        学校省份：{{ suitable_girl_expection.school_province }}<br>
+        学校城市：{{ suitable_girl_expection.school_city }}<br>
+        出生年份：{{ suitable_girl_expection.birth_year }}<br>
         身高：{{ suitable_girl_expection.stature }}<br>
         体重：{{ suitable_girl_expection.weight }}<br>
         相貌：{{ suitable_girl_expection.appearance }}<br>
@@ -18,7 +22,7 @@
         每月生活费：{{ suitable_girl_expection.wealth }}<br>
         <input type="submit" value = "支付10元门槛费发起邀请" />
         <br>
-        如果女生接受，您将收到女生的联系方式。<br>
+        如果女生接受，您的手机将收到女生的qq号。<br>
         如果女生三天内不接受，门槛费将在24小时后返还。
     {% else %}
         还没有发现合适的女生，如有我们会第一时间短信通知您。<br>
