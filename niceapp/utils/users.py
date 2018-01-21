@@ -17,13 +17,13 @@ def authenticate(mobile, code):
     return Users.get_one(user_id) if user_id else None
 
 
-def get_invite_boy_condition(user_id):
+def get_invite_boy_condition(girl_id):
     """
     查询一个邀请男生的信息
-    :param user_id:
+    :param girl_id:
     :return:
     """
-    user = Users.get_one(user_id)
+    user = Users.get_one_boy(girl_id)
     return {
         'id': user.id,
         'home_province': user.home_province,
@@ -40,16 +40,16 @@ def get_invite_boy_condition(user_id):
         'speciality': user.speciality,
         'habit': user.habit,
         'wealth': user.wealth
-    }  # todo
+    }
 
 
-def get_suitable_girl_expection(user_id):
+def get_suitable_girl_expection(boy_id):
     """
     获取合适的女生信息
-    :param user_id:
+    :param girl_id:
     :return:
     """
-    user = Users.get_one(user_id)
+    user = Users.get_one_girl(boy_id)
     return {
         'id': user.id,
         'home_province': user.home_province,
@@ -66,4 +66,4 @@ def get_suitable_girl_expection(user_id):
         'speciality': user.speciality,
         'habit': user.habit,
         'wealth': user.wealth
-    }  # todo
+    }

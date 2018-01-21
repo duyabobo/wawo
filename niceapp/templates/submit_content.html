@@ -7,11 +7,11 @@
 <form method = 'post' enctype="multipart/form-data" action="/submit_content">
     {% csrf_token %}
     {{user_form.as_p}}
-    <text>wawo不会索求女生的私人信息，除非女生被投诉</text>
+    <text>wawo不会要求女生填写个人信息，除非女生被投诉</text>
     <br>
-    <text>wawo不会把女生的手机号给其他人，除非女生接受了男生的邀请</text>
+    <text>wawo不会把女生的qq号给其他人，除非女生接受了男生的邀请</text>
     <br>
-    <text>wawo不会索要男生的私人信息，只要男生提供的外在信息是真实的</text>
+    <text>wawo不会索要男生的私人信息，只要男生提供的个人基本信息</text>
     <br>
     <input type="submit" value = "提交" />
 </form>

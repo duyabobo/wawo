@@ -118,6 +118,24 @@ class Users(AbstractUser):
         return cls.objects.filter(id=user_id).first()
 
     @classmethod
+    def get_one_girl(cls, boy_id):
+        """
+        获取一个合适的 girl # todo 匹配原则很复杂
+        :param boy_id:
+        :return:
+        """
+        return cls.objects.filter(sex=FEMALE).first()
+
+    @classmethod
+    def get_one_boy(cls, girl_id):
+        """
+        获取一个发起邀请的 boy # todo 顺序很复杂
+        :param girl_id:
+        :return:
+        """
+        return cls.objects.filter(sex=MALE).first()
+
+    @classmethod
     def get_one_by_mobile(cls, mobile):
         """
         查询一个 user 记录
