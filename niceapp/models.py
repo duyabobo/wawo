@@ -80,7 +80,7 @@ class Users(AbstractUser):
     real_name_status = models.IntegerField('恋爱状态：0未实名，1一级实名，2二级实名，3三级实名，4四级实名', default=0)
     # 条件数据：女的就是期望男友条件数据，男的就是自身的条件数据
     birth_year = models.IntegerField('出生年份', default=0)
-    qq = models.CharField('qq', max_length=20, default='')
+    qq = models.IntegerField('qq', default=0)
     home_province = models.IntegerField('家乡省份:0北京,1上海...', default=0)
     home_city = models.IntegerField('家乡城市名:0北京,1上海...', default=0)
     school_province = models.IntegerField('学校省份:0北京,1上海...', default=0)
@@ -161,7 +161,7 @@ class Users(AbstractUser):
         """
         user = Users.get_one_by_mobile(mobile)
         if not user:  # todo 需要检查是否用户信息过期了
-            user = Users(mobile=mobile, username=random.random())
+            user = Users(mobile=mobile)
         user.save()
         return user
 

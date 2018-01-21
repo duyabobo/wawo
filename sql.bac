@@ -1,13 +1,18 @@
 CREATE DATABASE `wawo` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE WAWO;
+drop table users_groups;
+drop table users_user_permissions;
+drop table auth_group_permissions;
+drop table django_admin_log;
+drop table users;
 CREATE TABLE `users` (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
-  `mobile` BIGINT NOT NULL DEFAULT 0,
+  `mobile` BIGINT UNSIGNED NOT NULL DEFAULT 0,
   `sex` TINYINT UNSIGNED NOT NULL DEFAULT 0,
   `info_status` TINYINT NOT NULL DEFAULT 0 COMMENT '账号状态: 0已注册，1完善，2已接触，3已恋爱，-1已过期，-2已投诉，-3已被投诉，-4申请退还门槛费',
   `real_name_status` TINYINT NOT NULL DEFAULT 0 COMMENT '恋爱状态：0未实名，1一级实名，2二级实名，3三级实名，4四级实名',
   `birth_year` SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '出生年份',
-  `qq` BIGINT NOT NULL DEFAULT 0,
+  `qq` BIGINT UNSIGNED NOT NULL DEFAULT 0,
   `home_province` SMALLINT UNSIGNED NOT NULL DEFAULT 0,
   `home_city` SMALLINT UNSIGNED NOT NULL DEFAULT 0,
   `school_province` SMALLINT UNSIGNED NOT NULL DEFAULT 0,
@@ -31,22 +36,22 @@ CREATE TABLE `users` (
   `school_num` VARCHAR(100) NOT NULL DEFAULT '',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `date_joined` datetime NOT NULL,
-  `email` varchar(254) NOT NULL,
-  `first_name` varchar(30) NOT NULL,
-  `is_active` tinyint NOT NULL,
-  `is_staff` tinyint NOT NULL,
-  `is_superuser` tinyint NOT NULL,
-  `last_login` datetime(6) DEFAULT NULL,
-  `last_name` varchar(30) NOT NULL,
   `password` varchar(128) NOT NULL,
+  `last_login` datetime(6) DEFAULT NULL,
+  `is_superuser` tinyint(1) NOT NULL,
   `username` varchar(150) NOT NULL,
+  `first_name` varchar(30) NOT NULL,
+  `last_name` varchar(30) NOT NULL,
+  `email` varchar(254) NOT NULL,
+  `is_staff` tinyint(1) NOT NULL,
+  `is_active` tinyint(1) NOT NULL,
+  `date_joined` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-
+drop table user_relation;
 CREATE TABLE `user_relation` (
-  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `boy_id` BIGINT UNSIGNED NOT NULL,
   `girl_id` BIGINT UNSIGNED NOT NULL,
   `relation` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0已通知/1男生已查阅/2已邀请/3女生已查阅/4已接触/5已恋爱/6已分手/7已投诉',
@@ -55,14 +60,14 @@ CREATE TABLE `user_relation` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-
+drop table message_code;
 CREATE TABLE `message_code` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `user_id` int(11) NOT NULL,
-  `usage` int(11) NOT NULL,
-  `mobile` int(11) NOT NULL,
-  `code` int(11) NOT NULL,
+  `user_id` TINYINT UNSIGNED NOT NULL,
+  `usage` TINYINT UNSIGNED NOT NULL,
+  `mobile` BIGINT UNSIGNED NOT NULL,
+  `code` SMALLINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
