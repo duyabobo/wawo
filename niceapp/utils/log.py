@@ -22,8 +22,13 @@ def logger(info_status, sex):
             try:
                 start_time = time.time()
                 user = request.user
-                if (info_status is not None and user.info_status != info_status) or (sex is not None and user.sex != sex):
-                    result = redirect("/")
+                if info_status or sex:
+                    if info_status is not None and user.info_status != info_status:
+                        result = redirect("/")
+                    elif sex is not None and user.sex != sex:
+                        result = redirect("/")
+                    else:
+                        result = view_method(*args, **kwargs)
                 else:
                     result = view_method(*args, **kwargs)
                 end_time = time.time()

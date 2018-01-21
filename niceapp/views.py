@@ -26,7 +26,8 @@ def access_login(request):
             mobile = auth_form.cleaned_data['mobile']
             code = auth_form.cleaned_data['code']
             user = authenticate(mobile=mobile, code=code)
-            login(request, user)
+            if user:
+                login(request, user)
             return redirect('/')
     else:
         auth_form = AuthForm()
@@ -44,8 +45,8 @@ def access_logout(request):
     return redirect("/login")
 
 
-@logger(REGISTERED, None)
 @login_required
+@logger(REGISTERED, None)
 def content_page(request):
     """
     补充信息
@@ -56,8 +57,8 @@ def content_page(request):
     return render(request, 'submit_content.html', {'user_form': user_form})
 
 
-@logger(REGISTERED, None)
 @login_required
+@logger(REGISTERED, None)
 def submit_content(request):
     """
     存储用户上传的信息（期望条件/自身条件）
@@ -77,8 +78,8 @@ def submit_content(request):
         return render(request, '404.html')
 
 
-@logger(SUBMIT, FEMALE)
 @login_required
+@logger(SUBMIT, FEMALE)
 def girl_after_submit(request):
     """
     女生填完期望信息的等待邀请状态
@@ -88,8 +89,8 @@ def girl_after_submit(request):
     return render(request, 'girl_after_submit.html')
 
 
-@logger(SUBMIT, MALE)
 @login_required
+@logger(SUBMIT, MALE)
 def suitable_girl_page(request):
     """
     查看合适的女孩
@@ -104,8 +105,8 @@ def suitable_girl_page(request):
     )
 
 
-@logger(SUBMIT, None)
 @login_required
+@logger(SUBMIT, None)
 def choice_suitable_girl(request):
     """
     选择合适的女生
@@ -126,8 +127,8 @@ def choice_suitable_girl(request):
         return render(request, '404.html')
 
 
-@logger(INVITE, MALE)
 @login_required
+@logger(INVITE, MALE)
 def boy_after_invite(request):
     """
     男生等待邀请被接收的状态
@@ -137,8 +138,8 @@ def boy_after_invite(request):
     return render(request, 'boy_after_invite.html')
 
 
-@logger(INVITE, FEMALE)
 @login_required
+@logger(INVITE, FEMALE)
 def invite_boy_page(request):
     """
     查看邀请自己的男生
@@ -153,8 +154,8 @@ def invite_boy_page(request):
     )
 
 
-@logger(INVITE, None)
 @login_required
+@logger(INVITE, None)
 def accept_invite_boy(request):
     """
     接受男生邀请, 不需要拒绝接口，默认一天之后自动拒绝，可以限制女生拒绝的盲目性
@@ -175,8 +176,8 @@ def accept_invite_boy(request):
         return render(request, '404.html')
 
 
-@logger(CONNECTED, None)
 @login_required
+@logger(CONNECTED, None)
 def connect_page(request):
     """
     邀请或被邀请，然后接受邀请进入联系阶段
@@ -186,8 +187,8 @@ def connect_page(request):
     return render(request, 'connect_success.html')
 
 
-@logger(CONNECTED, None)
 @login_required
+@logger(CONNECTED, None)
 def connect_to_fall_in_love(request):
     """
     进入恋爱状态
@@ -214,8 +215,8 @@ def connect_to_fall_in_love(request):
         return render(request, '404.html')
 
 
-@logger(CONNECTED, None)
 @login_required
+@logger(CONNECTED, None)
 def connect_to_not_fit(request):
     """
     接触后不合适
@@ -242,8 +243,8 @@ def connect_to_not_fit(request):
         return render(request, '404.html')
 
 
-@logger(CONNECTED, None)
 @login_required
+@logger(CONNECTED, None)
 def connect_to_complain(request):
     """
     接触后投诉
@@ -270,8 +271,8 @@ def connect_to_complain(request):
         return render(request, '404.html')
 
 
-@logger(FALLINLOVE, None)
 @login_required
+@logger(FALLINLOVE, None)
 def love_page(request):
     """
     恋爱页面
@@ -281,8 +282,8 @@ def love_page(request):
     return render(request, 'fall_in_love.html')
 
 
-@logger(FALLINLOVE, None)
 @login_required
+@logger(FALLINLOVE, None)
 def break_up_after_love(request):
     """
     恋爱后分手，分手后没有抱怨入口，因为可以防止进入恋爱状态的盲目性，分手如果想要退还门槛费，男生需要实名制
@@ -309,8 +310,8 @@ def break_up_after_love(request):
         return render(request, '404.html')
 
 
-@logger(BREAK_UP, None)
 @login_required
+@logger(BREAK_UP, None)
 def request_pay_back(request):
     """
     申请退还门槛费页面，如果选了，就设置男生的状态为 REQUEST_PAY_BACK
@@ -322,8 +323,8 @@ def request_pay_back(request):
     return redirect("/")
 
 
-@logger(None, None)
 @login_required
+@logger(None, None)
 def index(request):
     """
     主页，根据 info_status 构建主逻辑
