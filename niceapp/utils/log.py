@@ -4,6 +4,7 @@
 import logging
 import time
 from django.shortcuts import redirect, render
+from email import send
 
 
 log = logging.getLogger("django")  # 为loggers中定义的名称
@@ -69,6 +70,8 @@ def logger(info_status, sex):
                 )
             except Exception as e:
                 log.exception(str(e))
+                email_msg = 'Url: ' + request.path + ', Error: ' + str(e)
+                send(email_msg)
                 result = render(request, '500.html')
             return result
         return innver_innver_func

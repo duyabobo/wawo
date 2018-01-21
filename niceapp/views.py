@@ -11,6 +11,7 @@ from form.user_info import UserForm
 from models import *
 from utils.users import get_invite_boy_condition, get_suitable_girl_expection, authenticate
 from utils.log import logger
+from utils.email import send
 
 
 @logger(None, None)
